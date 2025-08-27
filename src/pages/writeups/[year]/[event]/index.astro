@@ -1,0 +1,180 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import ChallengeCard from '../../../../components/ChallengeCard.astro';
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import Prose from '../../../../components/core/Prose.astro';
+import Chip from '../../../../components/core/Chip.astro';
+import Card from '../../../../components/core/Card.astro';
+
+export async function getStaticPaths() {
+  const eventCollections = await getCollection('events');
+  const paths = eventCollections.map((event) => {
+    const slugs = event.id.split('/');
+    return {
+      params: {
+        year: slugs[0],
+        event: slugs[1],
+      },
+      props: {
+        event,
+      },
+    };
+  });
+
+  return paths;
+}
+
+interface Params {
+  year: string;
+  event: string;
+}
+
+interface Props {
+  event: CollectionEntry<'events'>;
+}
+
+const params = Astro.params as Params;
+const props: Props = Astro.props;
+
+const renderedEvent = await render(props.event);
+
+const eventChallengeCollections = await getCollection(
+  'eventChallenges',
+  ({ id, data }) =>
+    id.split('/')[0] === params.year &&
+    id.split('/')[1] === params.event &&
+    data.draft !== true
+);
+
+const allCategories = eventChallengeCollections
+  .flatMap((challenge) =>
+    Array.isArray(challenge.data.category)
+      ? challenge.data.category
+      : [challenge.data.category]
+  )
+  .filter(Boolean);
+
+const uniqueCategories = [...new Set(allCategories)];
+const categoryList = uniqueCategories.join(', ');
+const totalChallenges = eventChallengeCollections.length;
+const eventYear = params.year;
+
+const pageTitle = `${props.event.data.title} CTF Writeups`;
+const pageDescription = `Detailed writeups for ${totalChallenges} challenges from ${props.event.data.title} (${eventYear}). Categories include: ${categoryList}.`;
+
+const keywords = [
+  `${props.event.data.title}`,
+  `${props.event.data.title} writeups`,
+  `${props.event.data.title} solutions`,
+
+  ...eventChallengeCollections.map((c) => c.data.title),
+  ...eventChallengeCollections.map((c) => `${c.data.title} writeup`),
+  ...eventChallengeCollections.map((c) => `${c.data.title} solution`),
+].filter(Boolean);
+
+const publishDate = new Date(parseInt(eventYear), 0, 1);
+---
+
+<MainLayout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywords}
+  type="article"
+  publishDate={publishDate}
+>
+  <div class="flex flex-col gap-4">
+    <h1 class="text-4xl font-bold">{props.event.data.title}</h1>
+    <div class="flex flex-col gap-4">
+      <Prose>
+        <renderedEvent.Content />
+      </Prose>
+
+      <Card href={props.event.data.url} target="_blank">
+        <div slot="content">
+          <p class="font-medium">{props.event.data.title}</p>
+        </div>
+      </Card>
+
+      <div>
+        <div class="flex flex-wrap gap-2 items-center">
+          <span class="font-medium">Filter by category:</span>
+          <Chip id="filter-all" data-category="all" class="selected-filter"
+            >All</Chip
+          >
+          {
+            uniqueCategories.map((category) => (
+              <Chip id={`filter-${category}`} data-category={category}>
+                {category}
+              </Chip>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {
+          eventChallengeCollections.length === 0 ? (
+            <p>No challenges found :(</p>
+          ) : (
+            eventChallengeCollections.map((eventChallenge) => {
+              const challengeCategories = Array.isArray(
+                eventChallenge.data.category
+              )
+                ? eventChallenge.data.category
+                : [eventChallenge.data.category];
+
+              return (
+                <ChallengeCard
+                  event={eventChallenge}
+                  href={`/writeups/${eventChallenge.id.split('/').slice(0, -1).join('/')}`}
+                  class="challenge-card"
+                  data-categories={challengeCategories.join(',')}
+                />
+              );
+            })
+          )
+        }
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  const onIdle = (cb: IdleRequestCallback) =>
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+  onIdle(() => {
+    const filterButtons = document.querySelectorAll('[data-category]');
+    const challengeCards = document.querySelectorAll('.challenge-card');
+
+    document.getElementById('filter-all')?.classList.add('selected-filter');
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach((btn) => btn.classList.remove('selected-filter'));
+        button.classList.add('selected-filter');
+
+        const selectedCategory = button.getAttribute('data-category');
+        if (!selectedCategory) {
+          return;
+        }
+
+        challengeCards.forEach((card: Element) => {
+          if (!(card instanceof HTMLElement)) {
+            return;
+          }
+
+          if (selectedCategory === 'all') {
+            card.style.display = 'block';
+          } else if (selectedCategory?.length > 0) {
+            const cardCategories =
+              card.getAttribute('data-categories')?.split(',') || [];
+            card.style.display = cardCategories.includes(selectedCategory)
+              ? 'block'
+              : 'none';
+          }
+        });
+      });
+    });
+  });
+</script>

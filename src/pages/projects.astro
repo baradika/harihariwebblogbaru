@@ -1,0 +1,34 @@
+---
+import ProjectsComponent from "../components/Projects.astro"; // error ts(2440): Import declaration conflicts with local declaration of 'Projects'.
+import MainLayout from "../layouts/MainLayout.astro";
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+
+const projectTags = projects
+  .flatMap(project => 
+    Array.isArray(project.data.tags) 
+      ? project.data.tags 
+      : [project.data.tags]
+  )
+  .filter(Boolean);
+
+const uniqueTags = [...new Set(projectTags)];
+const projectNames = projects.map(p => p.data.title).filter(Boolean);
+
+const pageTitle = "Projects Portfolio";
+const pageDescription = `Explore my portfolio of ${projects.length} software development and cybersecurity projects. Featuring work in ${uniqueTags.map(tag => tag?.toLowerCase()).slice(0, 5).join(', ')} and more technologies.`;
+
+const keywords = [
+  ...uniqueTags.map(tag => tag?.toLowerCase()),
+  ...projectNames.map(name => name.toLowerCase())
+].filter((kw): kw is string => typeof kw === "string" && Boolean(kw));
+---
+
+<MainLayout 
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywords}
+>
+  <ProjectsComponent />
+</MainLayout>

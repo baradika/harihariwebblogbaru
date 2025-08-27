@@ -1,0 +1,16 @@
+---
+import type { MarkdownHeading } from 'astro';
+import TableOfContentList from './TableOfContentList.astro';
+import { buildHierarchy } from '../../utils/markdown';
+
+const { headings } = Astro.props as { headings: MarkdownHeading[] };
+---
+
+<aside class="px-8 text-wrap w-72 max-h-32">
+  <z-toc>
+    <h2 class="text-lg font-bold mb-2">On This Page</h2>
+    <TableOfContentList headings={buildHierarchy(headings)} depth={0} />
+  </z-toc>
+</aside>
+
+<script src="./z-toc"></script>

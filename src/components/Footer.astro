@@ -1,0 +1,33 @@
+---
+import Button from './core/Button.astro';
+
+interface Item {
+  url: string;
+  title?: string;
+  iconName?: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const props: Props = Astro.props;
+---
+
+<footer
+  class="py-4 mt-12 border-dashed border-t-1 border-flexoki-base-100 dark:border-flexoki-base-900"
+>
+  <div class="mx-auto px-4 max-w-screen-md">
+    <div class="flex justify-center md:justify-end items-center">
+      <div class="flex flex-wrap gap-4">
+        {
+          props.items.map((item: Item) => (
+            <Button variant="link" href={item.url}>
+              {item.title}
+            </Button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import Card from './core/Card.astro';
+
+const { event } = Astro.props as { event: CollectionEntry<'eventChallenges'> };
+---
+
+<Card class="bg-flexoki-light-bg-2 dark:bg-flexoki-dark-bg-2 items-center not-prose">
+  <div slot="content" class:list={[
+    'flex',
+    {
+      'flex-row': !event.data.flags,
+      'flex-col': event.data.flags,
+    },
+    'gap-2 items-center justify-center'
+  ]}>
+    {event.data.flags
+      ? event.data.flags.map((flag, i) => (
+      <div class="flex items-center gap-2">
+        <Icon name="lucide:flag" />
+        <div class="flex-1">
+          <strong>{event.data.title}</strong> Flag {i + 1}:{' '}
+          <strong><code class="break-all">{flag}</code></strong>
+        </div>
+      </div>
+        ))
+      : (
+      <>
+        <Icon name="lucide:flag" />
+        <div class="flex-1">
+          <strong>{event.data.title}</strong> Flag:{' '}
+          <strong><code class="break-all">{event.data.flag}</code></strong>
+        </div>
+      </>
+        )
+    }
+  </div>
+</Card>

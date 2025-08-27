@@ -1,0 +1,95 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import MainLayout from '../../../layouts/MainLayout.astro';
+import EventCard from '../../../components/EventCard.astro';
+
+export async function getStaticPaths() {
+  const eventCollections = await getCollection('events');
+  const years: string[] = [];
+
+  eventCollections.forEach((event: CollectionEntry<'events'>) => {
+    const slugs = event.id.split('/');
+    if (slugs.length > 1) {
+      const year = slugs[0];
+      if (!year) {
+        return;
+      }
+
+      if (!years.includes(year)) {
+        years.push(year);
+      }
+    }
+  });
+
+  return years.map((year) => ({
+    params: {
+      year,
+    },
+  }));
+}
+
+interface Params {
+  year: string;
+}
+
+const { year } = Astro.params as Params;
+
+const eventCollections = await getCollection(
+  'events',
+  ({ id }) => id.split('/')[0] === year
+);
+const sortedEventCollections = eventCollections.sort((a, b) => {
+  return (
+    new Date(b.data.end as Date).getTime() -
+    new Date(a.data.start as Date).getTime()
+  );
+});
+
+const eventNames = sortedEventCollections.map((event) => event.data.title);
+const totalEvents = sortedEventCollections.length;
+
+const pageTitle = `${year} CTF Writeups`;
+const pageDescription = `Collection of ${totalEvents} CTF event writeups from ${year}. Includes detailed solutions for ${eventNames.slice(0, 5).join(', ')} and more.`;
+
+// Generate keywords
+const keywords = [
+  `${year} ctf`,
+  `${year} ctf writeups`,
+  `${year} ctf solutions`,
+
+  `${year} capture the flag`,
+  `${year} capture the flag writeups`,
+  `${year} capture the flag solutions`,
+
+  ...eventNames,
+  ...eventNames.map((name) => `${name} writeup`),
+  ...eventNames.map((name) => `${name} solution`),
+].filter(Boolean);
+
+// Publication date
+const publishDate = new Date(parseInt(year), 0, 1);
+---
+
+<MainLayout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywords}
+  type="article"
+  publishDate={publishDate}
+>
+  <div class="grid md:grid-cols-2 gap-2">
+    {
+      sortedEventCollections.length === 0 ? (
+        <p>No events found :(</p>
+      ) : (
+        sortedEventCollections.map((event) => (
+          <a
+            href={`/writeups/${year}/${event.id.split('/').slice(1, -1).join('/')}`}
+          >
+            <EventCard event={event} />
+          </a>
+        ))
+      )
+    }
+  </div>
+</MainLayout>

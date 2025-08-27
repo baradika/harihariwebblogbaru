@@ -1,0 +1,107 @@
+---
+import { Image } from 'astro:assets';
+import MainLayout from '../layouts/MainLayout.astro';
+import Prose from '../components/core/Prose.astro';
+import Projects from '../components/Projects.astro';
+import MusicPresence from '../components/activity/MusicPresence.astro';
+import Card from '../components/core/Card.astro';
+// import Experience from "../components/Experience.astro";
+---
+
+<MainLayout title="Home">
+  <Prose>
+    <h1 class="font-medium">
+      <span class="block overflow-hidden group relative">
+        <span
+          class="inline-block duration-300 ease-in-out group-hover:-translate-y-full"
+        >
+          b4r
+        </span>
+        <span
+          class="inline-block absolute left-0 top-0 duration-300 ease-in-out translate-y-full group-hover:translate-y-0"
+        >
+          Fase Rais Baradika
+        </span>
+      </span>
+    </h1>
+    <p>
+      I'm a full-stack developer and dedicated <a
+        target="_blank"
+        href="https://ctftime.org/user/209558"
+        class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
+        ><Image
+          src="https://ctftime.org/favicon.png"
+          alt="CTFTime"
+          width={8}
+          height={8}
+          loading="eager"
+          class="inline-block mr-1"
+        />CTF</a
+      > player. I actively participate in a Capture The Flag (CTF) competitions,
+      where I sharpen my skills in cybersecurity, reverse engineering, dfir, blockchain and creative
+      thinking.
+    </p>
+    <p>
+      Explore my CTF writeups on the <a
+        href="/writeups"
+        class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
+        >🚩 Writeups page</a
+      >. Check out my profiles on
+      <a
+        target="_blank"
+        href="https://ctftime.org/user/216423"
+        class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
+        ><Image
+          src="https://ctftime.org/favicon.png"
+          alt="CTFTime"
+          width={8}
+          height={8}
+          loading="eager"
+          class="inline-block mr-1"
+        />CTFtime</a
+      > and
+      <a
+  href="https://github.com/baradika"
+  target="_blank"
+  rel="noopener"
+  class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded ml-1"
+>
+  <Image
+    src="https://github.githubassets.com/favicons/favicon.png"
+    alt="GitHub"
+    width={12}
+    height={12}
+    loading="eager"
+    class="inline-block mr-1"
+  />
+  GitHub
+</a>
+    </p>
+    <div class="not-prose flex flex-col md:flex-row gap-1 mt-4">
+      <MusicPresence />
+      <Card class="rounded-none rounded-b md:rounded-none md:rounded-r">
+        <div slot="content" class="text-xs md:w-42">
+          TODO: Add Experiences, Awards, Gym time, Discord, Github, and more
+          here (because someone said my website too simple).
+        </div>
+      </Card>
+    </div>
+
+    <h2 class="font-medium mt-8">Projects</h2>
+    <div class="not-prose">
+      <Projects limit={4} />
+    </div>
+    <!-- <p>
+        I also have <a
+          target="_blank"
+          href=`quartz.${Astro.url.host}`
+          class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
+          >🥬 Digital Garden</a
+        > for CTF notes and other notes.
+      </p>
+      <h2 class="font-medium">Experiences</h2>
+      <div class="not-prose">
+        <Experience />
+      </div> -->
+  </Prose>
+</MainLayout>

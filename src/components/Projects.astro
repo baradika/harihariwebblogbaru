@@ -1,0 +1,47 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Card from './core/Card.astro';
+import { getBackgroundColorByKey } from '../utils/color';
+
+const { limit = 0 } = Astro.props as {
+  limit?: number;
+};
+
+type ProjectCollection = CollectionEntry<'projects'>;
+const projects: ProjectCollection[] = await getCollection('projects');
+
+if (limit > 0) {
+  // TODO: Best way to limit the number of projects?
+  projects.length = Math.min(projects.length, limit);
+}
+---
+
+{
+  projects && (
+    <div class="grid md:grid-cols-2 gap-2">
+      {projects.map((project: ProjectCollection) => (
+        <Card href={project.data.url} target="_blank">
+          <div slot="content" class="flex flex-col gap-2">
+            <p class="font-medium">{project.data.title}</p>
+            <p class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+              {project.data.description}
+            </p>
+            <div class="flex flex-wrap items-center gap-2">
+              {project.data.tags !== undefined && (Array.isArray(project.data.tags) ? (
+                project.data.tags.map((tag) => tag.trim() !== '' && (
+                  <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getBackgroundColorByKey(tag)}`}>
+                    {tag}
+                  </span>
+                ))
+              ) : project.data.tags!.trim() !== '' && (
+                <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getBackgroundColorByKey(project.data.tags!)}`}>
+                  {project.data.tags}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  )
+}

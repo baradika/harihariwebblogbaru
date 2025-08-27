@@ -1,0 +1,10 @@
+<script is:inline>
+  const storedTheme =
+    typeof localStorage !== 'undefined' && localStorage.getItem('z-theme');
+  const theme =
+    storedTheme ||
+    (window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark');
+  document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+</script>

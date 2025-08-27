@@ -1,0 +1,36 @@
+---
+import { Icon } from 'astro-icon/components';
+import Button from './core/Button.astro';
+---
+
+<Button
+  variant="outline"
+  size="icon"
+  id="scroll-to-top"
+  class="hidden fixed bottom-8 right-8 z-50"
+>
+  <Icon name="lucide:arrow-up" />
+</Button>
+
+<script is:inline>
+  const onIdle = (cb) =>
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+  onIdle(() => {
+    const scrollToTopButton = document.getElementById('scroll-to-top');
+    const footer = document.querySelector('footer');
+
+    if (scrollToTopButton && footer) {
+      scrollToTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      window.addEventListener('scroll', () => {
+        const footerVisible =
+          footer.getBoundingClientRect().top <= window.innerHeight;
+        const shouldShowButton = window.scrollY > 256 && !footerVisible;
+        scrollToTopButton.classList.toggle('hidden', !shouldShowButton);
+      });
+    }
+  });
+</script>

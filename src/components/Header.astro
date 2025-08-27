@@ -1,0 +1,84 @@
+---
+import { Icon } from 'astro-icon/components';
+import Dropdown from './Dropdown.astro';
+import Button from './core/Button.astro';
+import ThemeSelect from './ThemeSelect.astro';
+
+interface Item {
+  url: string;
+  title: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items }: Props = Astro.props;
+---
+
+<header
+  class="sticky top-0 z-20 bg-flexoki-light-bg/[0.75] dark:bg-flexoki-dark-bg/[0.75] backdrop-blur-sm border-dashed border-b-1 border-flexoki-base-100 dark:border-flexoki-base-900"
+  id="header"
+>
+  <div class="mx-auto px-4 max-w-screen-md text-sm font-medium">
+    <div class="flex flex-wrap items-center justify-between gap-4 py-2">
+      <Button
+        variant="text"
+        href="/"
+        class="font-bold text-flexoki-light-cy dark:text-flexoki-dark-cy"
+        >b4r</Button
+      >
+
+      <nav class="flex gap-x-2 md:gap-x-4">
+        <Dropdown side="right" class="block md:hidden">
+          <Button
+            slot="trigger"
+            variant="outline"
+            size="icon"
+            class="hover:cursor-pointer"
+          >
+            <Icon name="lucide:menu" />
+          </Button>
+          <div class="flex flex-col min-w-32 p-1">
+            {
+              items.map((item: Item) => {
+                return (
+                  <Button href={item.url} variant="ghost" size="sm">
+                    {item.title}
+                  </Button>
+                );
+              })
+            }
+          </div>
+        </Dropdown>
+
+        <div class="hidden md:flex items-center gap-2 group">
+          {
+            items.map((item: Item) => {
+              return (
+                <a
+                  href={item.url}
+                  class:list={[
+                    'px-3 py-2 rounded',
+                    'text-flexoki-base-800 dark:text-flexoki-base-400 hover:bg-flexoki-light-ui dark:hover:bg-flexoki-dark-ui',
+                    {
+                      'text-flexoki-light-tx dark:text-flexoki-dark-tx bg-flexoki-light-ui dark:bg-flexoki-dark-ui group-hover:bg-transparent':
+                        Astro.url.pathname === '/' && item.url === '/'
+                          ? true
+                          : item.url !== '/' &&
+                            Astro.url.pathname.startsWith(item.url),
+                    },
+                  ]}
+                >
+                  {item.title}
+                </a>
+              );
+            })
+          }
+        </div>
+
+        <ThemeSelect />
+      </nav>
+    </div>
+  </div>
+</header>

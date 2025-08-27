@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Card from './core/Card.astro';
+
+// function formatToUTC(dateString: Date) {
+//   const date = new Date(dateString);
+//   const utcDate = new Date(date.toISOString());
+
+//   const options = {
+//     month: 'long',
+//     day: '2-digit',
+//     year: 'numeric',
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     hour12: false,
+//     timeZone: 'UTC'
+//   } as Intl.DateTimeFormatOptions;
+
+//   return utcDate.toLocaleString('en-US', options);
+// }
+
+const { event } = Astro.props as { event: CollectionEntry<'events'> };
+---
+
+<Card>
+  <Fragment slot="content">
+    <div class="flex items-center space-x-2">
+      <p class="font-medium">{event.data.title}</p>
+      <!-- <span
+        class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2.5 py-0.5 rounded"
+      >
+        {formatToUTC(event.data.start as Date)} -{' '}
+        {formatToUTC(event.data.end as Date)}
+      </span> -->
+    </div>
+    <p class="text-flexoki-base-600 dark:text-flexoki-base-500">
+      {event.data.description}
+    </p>
+    <!-- <p class="text-flexoki-base-600 dark:text-flexoki-base-500">
+      {event.data.location}
+    </p>
+    <p class="text-flexoki-base-600 dark:text-flexoki-base-500">
+      {event.data.format}
+    </p> -->
+    <!-- <div class="flex items-center space-x-2">
+      <span class="bg-flexoki-dark-ma dark:bg-flexoki-light-ma text-xs font-medium px-2.5 py-0.5 rounded">
+        1st place
+      </span>
+      <span class="bg-flexoki-dark-or dark:bg-flexoki-light-or text-xs font-medium px-2.5 py-0.5 rounded">
+        ICC de bluz
+      </span>
+    </div> -->
+  </Fragment>
+</Card>

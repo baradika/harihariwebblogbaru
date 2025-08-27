@@ -1,0 +1,53 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './Element.astro';
+
+interface Props extends HTMLAttributes<'div'> {}
+
+const { class: classList = '', ...rest } = Astro.props as Props;
+---
+
+<Element
+  class:list={[
+    'prose',
+    'prose-z',
+    'prose-sm',
+    'max-w-none',
+    'break-words',
+
+    'prose-code:not-in-prose-pre:bg-flexoki-light-ui',
+    'dark:prose-code:not-in-prose-pre:bg-flexoki-dark-ui',
+    'prose-code:not-in-prose-pre:rounded',
+    'prose-code:not-in-prose-pre:p-0.5',
+    'prose-code:not-in-prose-pre:before:content-[""]',
+    'prose-code:not-in-prose-pre:after:content-[""]',
+
+    'prose-blockquote:bg-flexoki-light-bg-2',
+    'prose-blockquote:dark:bg-flexoki-dark-bg-2',
+    'prose-blockquote:rounded',
+    'prose-blockquote:py-1',
+
+    'prose-a:text-flexoki-light-cy',
+    'prose-a:hover:text-flexoki-light-cy-2',
+    'prose-a:active:text-flexoki-light-cy-2',
+    'dark:prose-a:text-flexoki-dark-cy',
+    'dark:prose-a:hover:text-flexoki-dark-cy-2',
+    'dark:prose-a:active:text-flexoki-dark-cy-2',
+
+    'prose-img:rounded',
+    'prose-img:border',
+    'prose-img:mx-auto',
+    'prose-img:border-flexoki-light-ui',
+    'prose-img:dark:border-flexoki-dark-ui',
+
+    'prose-th:text-flexoki-light-tx',
+    'prose-th:dark:text-flexoki-dark-tx',
+
+    'prose-td:text-flexoki-light-tx-2',
+    'prose-td:dark:text-flexoki-dark-tx-2',
+  ]}
+  {classList}
+  {...rest}
+>
+  <slot />
+</Element>

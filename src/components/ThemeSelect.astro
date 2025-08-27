@@ -1,0 +1,85 @@
+---
+import { Icon } from 'astro-icon/components';
+import Button from './core/Button.astro';
+import Dropdown from './Dropdown.astro';
+---
+
+<!-- TODO: Change trigger icon? -->
+<z-theme-select>
+  <Dropdown side="right">
+    <Button slot="trigger" variant="outline" size="icon" class="hover:cursor-pointer">
+      <Icon name="lucide:sun" />
+    </Button>
+    <div class="flex flex-col p-1">
+      <Button variant="ghost" size="sm" class="hover:cursor-pointer" id="systemThemeButton">
+        <Icon name="lucide:computer" class="mr-2" /> System Default
+      </Button>
+      <Button variant="ghost" size="sm" class="hover:cursor-pointer" id="lightThemeButton">
+        <Icon name="lucide:sun" class="mr-2" /> Light Mode
+      </Button>
+      <Button variant="ghost" size="sm" class="hover:cursor-pointer" id="darkThemeButton">
+        <Icon name="lucide:moon" class="mr-2" /> Dark Mode
+      </Button>
+    </div>
+  </Dropdown>
+</z-theme-select>
+
+<script>
+  type Theme = 'system' | 'dark' | 'light';
+
+  const parseTheme = (theme: string): Theme => {
+    if (theme === 'system' || theme === 'dark' || theme === 'light') {
+      return theme;
+    }
+    return 'system';
+  };
+
+  const loadTheme = (): Theme => {
+    const theme = localStorage.getItem('z-theme');
+    return theme ? parseTheme(theme) : 'system';
+  };
+
+  const storeTheme = (theme: Theme) => {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('z-theme', theme);
+    }
+  };
+
+  const getPreferredColorScheme = (): Theme =>
+		matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
+  function onThemeChange(theme: Theme): void {
+    document.documentElement.setAttribute('data-theme', theme === 'system' ? getPreferredColorScheme() : theme);
+    storeTheme(theme);
+  }
+
+  matchMedia(`(prefers-color-scheme: light)`).addEventListener('change', () => {
+    if (loadTheme() === 'system') {
+      onThemeChange('system');
+    }
+  });
+
+  class ThemeSelect extends HTMLElement {
+    constructor() {
+      super();
+      onThemeChange(loadTheme());
+
+      const systemTheme = this.querySelector('#systemThemeButton');
+      systemTheme?.addEventListener('click', () => {
+        onThemeChange('system');
+      });
+
+      const lightTheme = this.querySelector('#lightThemeButton');
+      lightTheme?.addEventListener('click', () => {
+        onThemeChange('light');
+      });
+
+      const darkTheme = this.querySelector('#darkThemeButton');
+      darkTheme?.addEventListener('click', () => {
+        onThemeChange('dark');
+      });
+    }
+  }
+
+  customElements.define('z-theme-select', ThemeSelect);
+</script>

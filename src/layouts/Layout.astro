@@ -1,0 +1,168 @@
+---
+import '../styles/global.css';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Head from '../components/Head.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  image?: string;
+  author?: string;
+  type?: 'website' | 'article';
+  publishDate?: Date;
+}
+
+const {
+  title,
+  description = 'Software Engineer and CTF Player from Tangerang, Indonesia',
+  keywords,
+  image,
+  author,
+  type,
+  publishDate
+} = Astro.props as Props;
+
+const navItems = [
+  {
+    url: '/',
+    title: 'Home',
+  },
+  {
+    url: '/writeups',
+    title: 'Writeups',
+  },
+  {
+    url: '/projects',
+    title: 'Projects',
+  },
+];
+
+const footerItems = [
+  {
+    url: 'mailto:nexzter.net@gmail.com',
+    title: 'Contact',
+    iconName: 'lucide:mail',
+  },
+  {
+    url: 'https://www.youtube.com/@baradika6844',
+    title: 'YouTube',
+    iconName: 'lucide:youtube',
+  },
+  {
+    url: 'https://github.com/baradika',
+    title: 'GitHub',
+    iconName: 'lucide:github',
+  },
+  {
+    url: 'https://www.linkedin.com/in/faseraisbaradika',
+    title: 'LinkedIn',
+    iconName: 'lucide:linkedin',
+  },
+];
+
+let paths = Astro.url.pathname.split('/').map((path, index, paths) => {
+  if (index === 0) {
+    return {
+      label: 'home',
+      href: '/',
+    };
+  }
+
+  if (index === paths.length - 1) {
+    return {
+      label: decodeURIComponent(path),
+      href: Astro.url.pathname,
+    };
+  }
+
+  return {
+    label: decodeURIComponent(path),
+    href: paths.slice(0, index + 1).join('/'),
+  };
+});
+
+paths = paths.filter((path) => path.label !== '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head
+      title={title}
+      description={description}
+      keywords={keywords || []}
+      image={image || ''}
+      author={author || 'b4r'}
+      type={type || 'website'}
+      publishDate={publishDate || new Date('2023-01-01')}
+    />
+  </head>
+  <body
+    class="bg-flexoki-light-bg dark:bg-flexoki-dark-bg text-flexoki-light-tx dark:text-flexoki-dark-tx antialiased"
+  >
+    <div class="flex flex-col min-h-svh">
+      <Header items={navItems} />
+
+      <main class="flex-1">
+        <slot name="top" />
+        {
+          paths.length !== 1 && (
+            <Breadcrumb
+              items={paths}
+              class="flex flex-col p-4 mx-auto max-w-screen-md"
+            />
+          )
+        }
+        <slot />
+      </main>
+
+      <ScrollToTop />
+      <Footer items={footerItems} />
+    </div>
+  </body>
+</html>
+
+<script>
+  const onIdle = (cb: IdleRequestCallback) =>
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+  onIdle(() => {
+    const copyButtons = document.querySelectorAll(
+      '.copy-button'
+    ) as NodeListOf<HTMLButtonElement>;
+    copyButtons.forEach((button) => {
+      if (!button.dataset.code) {
+        console.warn('Copy button without data-code attribute found:', button);
+        return;
+      }
+
+      const timeouts: NodeJS.Timeout[] = [];
+      button.addEventListener('click', () => {
+        if (timeouts.length > 0) {
+          timeouts.forEach((timeout) => clearTimeout(timeout));
+        }
+
+        navigator.clipboard.writeText(button.dataset.code || '');
+
+        button.classList.add('keep-svg');
+        button.classList.add('copied');
+
+        timeouts.push(
+          setTimeout(() => {
+            button.classList.remove('copied');
+          }, 2000)
+        );
+
+        timeouts.push(
+          setTimeout(() => {
+            button.classList.remove('keep-svg');
+          }, 1500)
+        );
+      });
+    });
+  });
+</script>

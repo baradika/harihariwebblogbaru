@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import type { Page } from 'astro';
+import EventCard from '../../components/EventCard.astro';
+import Pagination from '../../components/Pagination.astro';
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: (paths: any[], options: { pageSize: number }) => any;
+}) {
+  const eventCollections = await getCollection('events');
+  const sortedEventCollections = eventCollections.sort((a, b) => {
+    return (
+      new Date(b.data.end as Date).getTime() -
+      new Date(a.data.start as Date).getTime()
+    );
+  });
+  return paginate(sortedEventCollections, { pageSize: 16 });
+}
+
+interface Props {
+  page: Page;
+}
+
+const { page } = Astro.props as Props;
+
+const allYears = [...new Set(page.data.map(event => event.id.split('/')[0]))].sort((a, b) => b.localeCompare(a));
+const recentEvents = page.data.slice(0, 5).map(event => event.data.title);
+
+const pageTitle = "CTF Writeups Collection";
+const pageDescription = `Browse my comprehensive collection of CTF writeups and solutions from ${allYears.join(', ')}. Featuring recent events: ${recentEvents.join(', ')}.`;
+
+const keywords = [
+  'ctf',
+  'ctf writeups',
+  'ctf solutions',
+
+  'capture the flag',
+  'capture the flag writeups',
+  'capture the flag solutions',
+
+  ...page.data.map(event => `${event.data.title}`),
+  ...page.data.map(event => `${event.data.title} writeup`),
+  ...page.data.map(event => `${event.data.title} solution`),
+].filter(Boolean);
+
+const currentPage = page.currentPage;
+const pageSuffix = currentPage > 1 ? ` - Page ${currentPage}` : '';
+const fullPageTitle = pageTitle + pageSuffix;
+---
+
+<MainLayout 
+  title={fullPageTitle}
+  description={pageDescription}
+  keywords={keywords}
+>
+  <div class="flex flex-col gap-4 min-h-[calc(100vh-14.35rem)]">
+    <div class="grid md:grid-cols-2 gap-2">
+      {page.data.length === 0 && <p>No writeups found :(</p>}
+      {
+        [...page.data].map((event) => (
+          <a href={`/writeups/${event.id.split('/').slice(0, -1).join('/')}`}>
+            <EventCard event={event} />
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      page.lastPage !== 1 && (
+        <div class="flex gap-1 justify-end">
+          <Pagination page={page} />
+        </div>
+      )
+    }
+  </div>
+</MainLayout>

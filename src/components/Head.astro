@@ -1,0 +1,103 @@
+---
+// import { ClientRouter } from 'astro:transitions';
+import { stripTrailingSlash } from '../utils/path';
+import ThemeProvider from './ThemeProvider.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string[];
+  image?: string;
+  author?: string;
+  type?: 'website' | 'article';
+  publishDate?: Date;
+}
+
+const { 
+  title, 
+  description, 
+  keywords = [], 
+  image = '',
+  author = "b4r",
+  type = "website",
+  publishDate = new Date('2025-08-27'),
+} = Astro.props as Props;
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site)
+  : undefined;
+
+const base = stripTrailingSlash(import.meta.env.BASE_URL);
+const sitemap = `${base}/sitemap-index.xml`;
+
+const keywordsString = keywords.join(', ');
+
+const ogImage = image !== '' && Astro.site 
+  ? new URL(image.startsWith('/') ? image : `/${image}`, Astro.site).href
+  : undefined;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="alternate icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+<title>{title} | b4r</title>
+
+<!-- Primary Meta Tags -->
+<meta name="description" content={description} />
+{keywordsString && <meta name="keywords" content={keywordsString} />}
+{author && <meta name="author" content={author} />}
+
+{canonical && <link rel="canonical" href={canonical.href} />}
+
+<!-- Open Graph / Facebook Meta Tags -->
+<meta property="og:title" content={title} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical?.href} />
+<meta property="og:description" content={description} />
+<meta property="og:site_name" content="ztz0" />
+{ogImage && <meta property="og:image" content={ogImage} />}
+{publishDate !== new Date('2023-01-01') && <meta property="article:published_time" content={publishDate.toISOString()} />}
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+<!-- Schema.org markup for Google -->
+<script type="application/ld+json">
+  {
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": type === "article" ? "TechArticle" : "WebPage",
+      "headline": title,
+      "description": description,
+      "image": ogImage,
+      "author": {
+        "@type": "Person",
+        "name": author
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "b4r"
+      },
+      ...(publishDate !== new Date('2023-01-01') && {
+        "datePublished": publishDate.toISOString()
+      })
+    })
+  }
+</script>
+
+{Astro.site && <link rel="sitemap" href={sitemap} />}
+
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet"
+/> -->
+
+<!-- <ClientRouter /> -->
+<ThemeProvider />

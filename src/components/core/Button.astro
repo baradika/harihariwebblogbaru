@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './Element.astro';
+
+interface Props
+  extends HTMLAttributes<'button'>,
+    Omit<HTMLAttributes<'a'>, 'type'> {
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+    | 'text'
+    | undefined;
+  size?: 'sm' | 'default' | 'lg' | 'icon' | undefined;
+}
+
+const {
+  variant = 'primary',
+  size = 'default',
+  class: classList = '',
+  ...rest
+} = Astro.props as Props;
+---
+
+<Element
+  class:list={[
+    'px-4 py-2',
+    'rounded',
+    {
+      'bg-flexoki-cyan-400 dark:bg-flexoki-cyan-400 hover:bg-flexoki-cyan-600 hover:dark:bg-flexoki-cyan-600 text-flexoki-black':
+        variant === 'primary',
+      'bg-flexoki-base-100 dark:bg-flexoki-base-900 hover:bg-flexoki-base-150 hover:dark:bg-flexoki-base-850 text-flexoki-black dark:text-flexoki-base-200':
+        variant === 'secondary',
+      'bg-flexoki-paper dark:bg-flexoki-black border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-150 hover:dark:bg-flexoki-base-850 text-flexoki-black dark:text-flexoki-base-200':
+        variant === 'outline',
+      'text-flexoki-black dark:text-flexoki-base-200 hover:bg-flexoki-base-150 hover:dark:bg-flexoki-base-850':
+        variant === 'ghost',
+      'p-0 text-flexoki-black dark:text-flexoki-base-200 hover:text-flexoki-cyan-600 hover:dark:text-flexoki-cyan-400':
+        variant === 'link',
+      'p-0 text-flexoki-black dark:text-flexoki-base-200': variant === 'text',
+    },
+    {
+      'text-sm': size === 'sm',
+      'text-lg': size === 'lg',
+      'p-3': size === 'icon',
+      'text-base': size === 'default',
+    },
+  ]}
+  as={rest.href ? 'a' : 'button'}
+  {classList}
+  {...rest}
+>
+  <div class="flex items-center gap-2">
+    <slot />
+  </div>
+</Element>

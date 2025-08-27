@@ -1,0 +1,84 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Icon } from 'astro-icon/components';
+import Dropdown from './Dropdown.astro';
+import Element from './core/Element.astro';
+import Button from './core/Button.astro';
+
+interface Item {
+  label: string;
+  href: string;
+}
+
+interface Props extends HTMLAttributes<'div'> {
+  items: Item[];
+}
+
+const { items, ...rest } = Astro.props as Props;
+---
+
+<Element as="nav" {...rest}>
+  <ol class="flex flex-wrap gap-1 items-center text-sm break-words">
+    {
+      items &&
+        items.map((item, index) => {
+          const isLastItem = index === items.length - 1;
+          const isExpandable = index === 1 && items.length > 4;
+          const shouldShowLink =
+            items.length < 4 ||
+            items.length === 4 ||
+            (items.length > 4 &&
+              (index == 0 || index == 1 || index >= items.length - 3));
+
+          return (
+            <>
+              {index !== 0 && shouldShowLink && (
+                <li class="inline-flex items-center">
+                  <Icon name="lucide:chevron-right" />
+                </li>
+              )}
+
+              {isLastItem ? (
+                <li class="inline-flex items-center">
+                  <span class="text-flexoki-light-cy dark:text-flexoki-dark-cy">
+                    {item.label}
+                  </span>
+                </li>
+              ) : isExpandable ? (
+                <li class="inline-flex items-center">
+                  <Dropdown>
+                    <span
+                      slot="trigger"
+                      class="flex items-center justify-center hover:cursor-pointer"
+                    >
+                      ...
+                    </span>
+                    <div class="flex flex-col p-1">
+                      {items.slice(1, items.length - 3).map((hiddenItem) => (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          href={hiddenItem.href}
+                        >
+                          {decodeURIComponent(hiddenItem.label)}
+                        </Button>
+                      ))}
+                    </div>
+                  </Dropdown>
+                </li>
+              ) : shouldShowLink ? (
+                <li class="inline-flex items-center">
+                  <a
+                    href={item.href}
+                    class="hover:text-flexoki-light-cy-2 hover:dark:text-flexoki-dark-cy-2"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ) : null}
+            </>
+          );
+        })
+    }
+  </ol>
+</Element>

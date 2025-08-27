@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './Element.astro';
+
+interface Props
+  extends HTMLAttributes<'button'> {
+}
+
+const {
+  class: classList = '',
+  ...rest
+} = Astro.props as Props;
+---
+
+<Element
+  class:list={[
+    'px-2 py-1',
+    'rounded',
+    'bg-flexoki-paper dark:bg-flexoki-black border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-150 hover:dark:bg-flexoki-base-850 text-flexoki-black dark:text-flexoki-base-200',
+    'text-xs',
+    'hover:cursor-pointer'
+  ]}
+  as='button'
+  {classList}
+  {...rest}
+>
+  <div class="flex items-center gap-2">
+    <slot />
+  </div>
+</Element>

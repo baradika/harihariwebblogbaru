@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './Element.astro';
+
+interface Props extends HTMLAttributes<'span'> {
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | undefined;
+}
+
+const {
+  variant = 'primary',
+  class: classList = '',
+  ...rest
+} = Astro.props as Props;
+---
+
+<Element
+  as="span"
+  class:list={[
+    'px-0.5', 'rounded',
+    {
+      'text-flexoki-black dark:text-flexoki-black bg-flexoki-light-cy dark:bg-flexoki-dark-cy': variant == 'primary',
+      'bg-flexoki-light-ui dark:bg-flexoki-dark-ui': variant == 'secondary'
+    }
+  ]}
+  {...rest}
+>
+  <slot />
+</Element>

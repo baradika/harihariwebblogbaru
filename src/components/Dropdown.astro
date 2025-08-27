@@ -1,0 +1,79 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './core/Element.astro';
+import Card from './core/Card.astro';
+
+interface Props extends HTMLAttributes<'div'> {
+  position?: 'top' | 'bottom' | undefined;
+  side?: 'left' | 'right' | undefined;
+}
+
+const {
+  position = 'bottom',
+  side = 'left',
+  class: classList = '',
+  ...rest
+} = Astro.props as Props;
+---
+
+<Element as="z-dropdown" class:list="relative block" {classList} {...rest}>
+  <slot name="trigger" />
+  <Card
+    class:list={[
+      'hidden absolute w-max',
+      'bg-flexoki-base-100 dark:bg-flexoki-base-900 border border-flexoki-base-100 dark:border-flexoki-base-900',
+      {
+        'top-full mt-2': position === 'bottom',
+        'bottom-full mb-2': position === 'top',
+      },
+      {
+        'right-0': side === 'right',
+        'left-0': side === 'left',
+      },
+    ]}
+  >
+    <slot />
+  </Card>
+</Element>
+
+<script>
+  class Dropdown extends HTMLElement {
+    constructor() {
+      super();
+
+      const onIdle = (cb: IdleRequestCallback) =>
+        (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+      onIdle(() => {
+        this.init();
+      });
+    }
+
+    init() {
+      const dropdownButtonTrigger = this.children[0];
+      if (!dropdownButtonTrigger) {
+        return;
+      }
+
+      const dropdownContent = this.children[1];
+      if (!dropdownContent) {
+        return;
+      }
+
+      dropdownButtonTrigger.addEventListener('click', () => {
+        dropdownContent?.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (event) => {
+        if (
+          !dropdownButtonTrigger.contains(event.target as Node) &&
+          !dropdownContent?.contains(event.target as Node)
+        ) {
+          dropdownContent?.classList.add('hidden');
+        }
+      });
+    }
+  }
+
+  customElements.define('z-dropdown', Dropdown);
+</script>

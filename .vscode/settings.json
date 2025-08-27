@@ -1,0 +1,11 @@
+{
+    "editor.tabSize": 2,
+    "prettier.singleQuote": true,
+    "python-envs.pythonProjects": [
+        {
+            "path": "src/data/events/2025/ctf-find-it",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
+}

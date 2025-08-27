@@ -1,0 +1,129 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import { getBackgroundColorByCategory } from '../utils/color';
+
+const { event } = Astro.props as { event: CollectionEntry<'eventChallenges'> };
+
+const categoryIconMap: { [key: string]: string } = {
+  crypto: 'lucide:lock',
+  web: 'lucide:globe',
+  pwn: 'lucide:skull',
+  bin: 'lucide:skull',
+  rev: 'lucide:eye',
+  forensics: 'lucide:search',
+  misc: 'lucide:apple',
+};
+
+const getIcon = (category: string) => {
+  const categoryLowerCased = category?.toLowerCase() || '';
+  const matchedKey = Object.keys(categoryIconMap).find((key) =>
+    categoryLowerCased.includes(key)
+  );
+
+  return matchedKey ? categoryIconMap[matchedKey] : 'lucide:tag';
+};
+---
+
+<div
+  class="not-prose flex flex-col gap-y-4 border p-4 rounded border-flexoki-base-100 dark:border-flexoki-base-900 text-flexoki-light-tx dark:text-flexoki-dark-tx"
+>
+  <div class="flex flex-col divide-y">
+    <div
+      class="flex gap-x-2 py-2 first:pt-0 last:pb-0 border-flexoki-base-100 dark:border-flexoki-base-900"
+    >
+      <div class="flex-1">
+        <div class="flex gap-x-2 items-center">
+          <Icon name="lucide:calendar" />
+          Category
+        </div>
+      </div>
+      <div class="flex-1">
+        {
+          Array.isArray(event.data.category)
+            ? event.data.category.map(
+                (cat) =>
+                  cat.trim() !== '' && (
+                    <span
+                      class={`flex flex-row gap-x-2 items-center text-xs font-medium px-2.5 py-0.5 rounded w-fit
+                  ${getBackgroundColorByCategory(cat)}
+                `}
+                    >
+                      <Icon name={getIcon(cat)} />
+                      {cat}
+                    </span>
+                  )
+              )
+            : event.data.category &&
+              event.data.category.trim() !== '' && (
+                <span
+                  class={`flex flex-row gap-x-2 items-center text-xs font-medium px-2.5 py-0.5 rounded w-fit
+                ${getBackgroundColorByCategory(event.data.category)}
+              `}
+                >
+                  <Icon name={getIcon(event.data.category)} />
+                  {event.data.category}
+                </span>
+              )
+        }
+      </div>
+    </div>
+    {event.data.points !== -1 && (<div
+      class="flex gap-x-2 py-2 first:pt-0 last:pb-0 border-flexoki-base-100 dark:border-flexoki-base-900"
+    >
+      <div class="flex-1">
+        <div class="flex gap-x-2 items-center">
+          <Icon name="lucide:clock" />
+          Points
+        </div>
+      </div>
+      <div class="flex-1">
+        <span>{event.data.points}</span>
+      </div>
+    </div>)}
+    {event.data.solves !== -1 && (<div
+      class="flex gap-x-2 py-2 first:pt-0 last:pb-0 border-flexoki-base-100 dark:border-flexoki-base-900"
+    >
+      <div class="flex-1">
+        <div class="flex gap-x-2 items-center">
+          <Icon name="lucide:check" />
+          Solves
+        </div>
+      </div>
+      <div class="flex-1">
+        <span>{event.data.solves}</span>
+      </div>
+    </div>)}
+    <div
+      class="flex gap-x-2 py-2 first:pt-0 last:pb-0 border-flexoki-base-100 dark:border-flexoki-base-900"
+    >
+      <div class="flex-1">
+        <div class="flex gap-x-2 items-center">
+          <Icon name="lucide:tag" />
+          Tags
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex flex-wrap gap-1">
+          {
+            Array.isArray(event.data.tags)
+              ? event.data.tags.map(
+                  (tag) =>
+                    tag.trim() !== '' && (
+                      <span class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2.5 py-0.5 rounded">
+                        #{tag}
+                      </span>
+                    )
+                )
+              : event.data.tags &&
+                event.data.tags.trim() !== '' && (
+                  <span class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2.5 py-0.5 rounded">
+                    #{event.data.tags}
+                  </span>
+                )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

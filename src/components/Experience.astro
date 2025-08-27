@@ -1,0 +1,27 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Card from './core/Card.astro';
+
+type Experience = CollectionEntry<'experiences'>;
+const experiences: Experience[] = await getCollection('experiences');
+---
+
+{
+  experiences && (
+    <div class="flex flex-col space-y-2">
+      {experiences.map((experience: Experience) => (
+        <Card>
+          <Fragment slot="content">
+            <div class="flex items-center space-x-2">
+              <p class="font-medium">{experience.data.title}</p>
+              <span class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2.5 py-0.5 rounded">
+                {experience.data.startDate} - {experience.data.endDate}
+              </span>
+            </div>
+            <p class="text-sm">{experience.data.description}</p>
+          </Fragment>
+        </Card>
+      ))}
+    </div>
+  )
+}

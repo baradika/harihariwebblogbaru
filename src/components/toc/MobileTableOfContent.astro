@@ -1,0 +1,70 @@
+---
+import { Icon } from 'astro-icon/components';
+import TableOfContentList from './TableOfContentList.astro';
+import { buildHierarchy } from '../../utils/markdown';
+import type { MarkdownHeading } from 'astro';
+
+const { headings } = Astro.props as { headings: MarkdownHeading[] };
+---
+
+<nav
+  class="block xl:hidden sticky z-10 w-full bg-flexoki-light-bg/[0.75] dark:bg-flexoki-dark-bg/[0.75] backdrop-blur-sm border-dashed border-b-1 border-flexoki-base-100 dark:border-flexoki-base-900"
+  id="nav"
+>
+  <z-toc>
+    <div class="mx-auto px-4 max-w-screen-md text-sm items-center min-h-[3.5rem]">
+      <details class="group items-center min-h-[3.5rem]">
+        <summary class="items-center min-h-[3.5rem]">
+          <div class="flex flex-row justify-between items-center min-h-[3.5rem]">
+            On This Page
+            <Icon
+              name="lucide:chevron-down"
+              class="transition group-open:transform group-open:rotate-180"
+            />
+          </div>
+        </summary>
+        <div class="max-h-48 overflow-hidden overflow-y-auto group-open:pb-4">
+          <TableOfContentList headings={buildHierarchy(headings)} depth={0} />
+        </div>
+      </details>
+    </div>
+  </z-toc>
+</nav>
+
+<style>
+  details > summary {
+    list-style: none;
+  }
+
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+</style>
+
+<script is:inline>
+  const header = document.querySelector('#header');
+  const nav = document.querySelector('#nav');
+  const details = document.querySelector('#nav details');
+
+  if (header && nav) {
+    const headerHeight = header.getBoundingClientRect().height;
+    nav.style.top = `${headerHeight}px`;
+  }
+
+  window.addEventListener('resize', () => {
+    if (header && nav) {
+      const headerHeight = header.getBoundingClientRect().height;
+      nav.style.top = `${headerHeight}px`;
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (
+      !header.contains(event.target) &&
+      !nav.contains(event.target) &&
+      details
+    ) {
+      details.removeAttribute('open');
+    }
+  });
+</script>

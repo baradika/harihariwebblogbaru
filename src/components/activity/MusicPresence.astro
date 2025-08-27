@@ -1,0 +1,92 @@
+---
+import { Icon } from 'astro-icon/components';
+import Card from '../core/Card.astro';
+import Skeleton from '../core/Skeleton.astro';
+---
+
+<div class="hidden">
+  <Icon name="lucide:audio-lines" class="h-6 w-6" />
+</div>
+
+<Card id="music-presence" class="w-full rounded-none rounded-t md:rounded-none md:rounded-l">
+  <div
+    class="relative flex flex-col justify-between gap-4"
+    id="music-skeleton"
+    slot="content"
+  >
+    <Skeleton class="w-16 h-16 rounded" />
+    <div class="flex flex-col justify-end overflow-hidden">
+      <div class="flex flex-col gap-1">
+        <Skeleton class="w-[calc(1/4.5*100%)] h-6 rounded" />
+        <div class="flex flex-row gap-1">
+          <Skeleton class="w-[calc(1/5*100%)] h-5 rounded" />
+          <Skeleton class="w-[calc(1/4.5*100%)] h-5 rounded" />
+          <Skeleton class="w-[calc(1/6*100%)] h-5 rounded" />
+        </div>
+      </div>
+    </div>
+    <div class="text-primary absolute top-0 right-0">
+      <Icon name="lucide:audio-lines" class="h-6 w-6" />
+    </div>
+  </div>
+
+  <div
+    id="music-content"
+    class="hidden relative flex-col justify-between gap-4"
+    slot="content"
+  >
+    <img
+      class="aspect-square w-16 h-16 flex-shrink bg-cover bg-center rounded border border-flexoki-light-ui dark:border-flexoki-dark-ui"
+      id="album-art"
+      title="Album Art"
+    >
+    </>
+    <div class="flex flex-col justify-end overflow-hidden">
+      <div class="flex flex-col">
+        <span class="text-lg font-bold" id="now-playing"></span>
+        <div class="flex flex-row flex-wrap gap-x-2 items-center">
+          <a class="flex flex-row gap-1 items-center group" id="song-link">
+            <span class="text-sm font-medium" id="song-title"></span>
+            <Icon
+              name="lucide:arrow-up-right"
+              class="duration-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+          <span
+            class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2"
+            id="separator-artist-name">•</span
+          >
+          <span
+            class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2"
+            id="artist-name"></span>
+          <span
+            class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2"
+            id="separator-album-name">•</span
+          >
+          <span
+            class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2"
+            id="album-name"></span>
+        </div>
+      </div>
+    </div>
+    <div class="text-primary absolute top-0 right-0">
+      <Icon name="lucide:audio-lines" class="h-6 w-6" />
+    </div>
+  </div>
+</Card>
+
+<script>
+  import { initMusicPresence } from './MusicPresence';
+
+  const onIdle = (cb: IdleRequestCallback) =>
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+  onIdle(() => {
+    const container = document.getElementById(
+      'music-presence'
+    ) as HTMLDivElement | null;
+    if (container) {
+      initMusicPresence(container);
+    }
+  });
+</script>

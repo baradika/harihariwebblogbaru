@@ -1,0 +1,100 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import MainLayout from '../../../../../layouts/MainLayout.astro';
+import ChallengeCard from '../../../../../components/ChallengeCard.astro';
+
+export async function getStaticPaths() {
+  const eventChallengeCollections = await getCollection('eventChallenges');
+  const paths = eventChallengeCollections.map((event) => {
+    const slugs = event.id.split('/');
+    return {
+      params: {
+        year: slugs[0],
+        event: slugs[1],
+        category: slugs[2],
+      },
+      props: {
+        event,
+      },
+    };
+  });
+
+  return paths;
+}
+
+interface Params {
+  year: string;
+  event: string;
+  category: string;
+}
+
+interface Props {
+  event: CollectionEntry<'events'>;
+}
+
+const params = Astro.params as Params;
+const props: Props = Astro.props;
+
+const eventChallengeCollections = await getCollection(
+  'eventChallenges',
+  ({ id, data }) =>
+    id.split('/')[0] === params.year &&
+    id.split('/')[1] === params.event &&
+    id.split('/')[2] === params.category &&
+    data.draft !== true
+);
+
+const categoryName = params.category;
+const year = params.year;
+
+const challengeNames = eventChallengeCollections.map((c) => c.data.title);
+
+const pageTitle = `${categoryName} Challenges for ${props.event.data.title} CTF`;
+const pageDescription = `Explore ${eventChallengeCollections.length} ${categoryName} challenges from ${props.event.data.title} CTF (${year}). Detailed solutions and writeups for ${challengeNames.slice(0, 5).join(', ')} and more.`;
+
+const keywords = [
+  `${props.event.data.title}`,
+  `${props.event.data.title} events`,
+  `${props.event.data.title} writeups`,
+  `${props.event.data.title} solutions`,
+
+  `${props.event.data.title} ${categoryName}`,
+  `${props.event.data.title} ${categoryName} writeups`,
+  `${props.event.data.title} ${categoryName} solutions`,
+
+  ...eventChallengeCollections.map((c) => c.data.title),
+  ...eventChallengeCollections.map((c) => `${c.data.title} writeup`),
+  ...eventChallengeCollections.map((c) => `${c.data.title} solution`),
+].filter(Boolean);
+
+const publishDate = new Date(parseInt(year), 0, 1);
+---
+
+<MainLayout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywords}
+  type="article"
+  publishDate={publishDate}
+>
+  <div class="flex flex-col gap-4">
+    <h1 class="text-4xl font-bold">{params.category}</h1>
+    <div class="flex flex-col gap-4">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {
+          eventChallengeCollections.length === 0 ? (
+            <p>No challenges found :(</p>
+          ) : (
+            eventChallengeCollections.map((eventChallenge) => (
+              <a
+                href={`/writeups/${eventChallenge.id.split('/').slice(0, -1).join('/')}`}
+              >
+                <ChallengeCard event={eventChallenge} />
+              </a>
+            ))
+          )
+        }
+      </div>
+    </div>
+  </div>
+</MainLayout>

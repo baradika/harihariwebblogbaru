@@ -1,0 +1,67 @@
+---
+import type { Page } from 'astro';
+import Button from './core/Button.astro';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  page: Page
+}
+
+const { page } = Astro.props as Props;
+
+let pageNumbers: number[] = [];
+const currentPage = page.currentPage;
+const lastPage = page.lastPage;
+const delta = 1;
+
+for (let i = Math.max(1, currentPage - delta); i <= Math.min(lastPage, currentPage + delta); i++) {
+  pageNumbers.push(i);
+}
+
+if (pageNumbers.length > 0 && (pageNumbers[0] ?? 0) > 1) {
+  pageNumbers.unshift(1);
+  if (pageNumbers.length > 1 && (pageNumbers[1] ?? 0) > 2) {
+    pageNumbers.splice(1, 0, -1);
+  }
+}
+
+if (pageNumbers.length > 0 && (pageNumbers[pageNumbers.length - 1] ?? 0) < lastPage) {
+  if ((pageNumbers[pageNumbers.length - 1] ?? 0) < lastPage - 1) {
+    pageNumbers.push(-1);
+  }
+
+  pageNumbers.push(lastPage);
+}
+---
+
+<nav class="flex flex-row space-x-2">
+  <Button variant="ghost" href={page.url.prev} disabled={!page.url.prev} size="sm">
+    <Icon name="lucide:chevron-left" />
+    Previous
+  </Button>
+
+  {pageNumbers.map((pageNumber) => {
+    if (pageNumber === -1) {
+      return <Button variant="ghost" size="sm" disabled>...</Button>;
+    }
+    
+    const isCurrentPage = page.currentPage === pageNumber;
+    const variant = isCurrentPage ? 'outline' : 'ghost';
+    const pageUrl = isCurrentPage 
+      ? page.url.current
+      : pageNumber === 1 
+        ? '/writeups' 
+        : `/writeups/${pageNumber}`;
+    
+    return (
+      <Button variant={variant} size="sm" href={pageUrl}>
+        {pageNumber}
+      </Button>
+    );
+  })}
+
+  <Button variant="ghost" href={page.url.next} disabled={!page.url.next} size="sm">
+    Next
+    <Icon name="lucide:chevron-right" />
+  </Button>
+</nav>

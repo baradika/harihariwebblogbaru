@@ -1,0 +1,45 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Icon } from 'astro-icon/components';
+import Element from './Element.astro';
+
+interface Props extends HTMLAttributes<'div'>, HTMLAttributes<'a'> {
+  size?: 'sm' | 'md' | 'lg' | 'xl' | undefined;
+}
+
+const { class: classList = '', ...rest } = Astro.props as Props;
+const remoteLink = rest.href?.toString().startsWith('http');
+---
+
+<Element
+  as={rest.href ? 'a' : 'div'}
+  class:list={[
+    'rounded text-flexoki-light-tx dark:text-flexoki-dark-tx bg-flexoki-base-50 dark:bg-flexoki-base-950 border border-flexoki-base-100 dark:border-flexoki-base-900',
+    {
+      'flex flex-row justify-between group': remoteLink,
+      'flex flex-col': !remoteLink,
+    },
+    {
+      'p-4': Astro.slots.has('content'),
+    },
+  ]}
+  {classList}
+  target={remoteLink ? '_blank' : undefined}
+  {...rest}
+>
+  <div class="flex flex-col flex-1">
+    <slot name="content" />
+    <slot />
+  </div>
+
+  {
+    remoteLink && (
+      <div class="flex items-center">
+        <Icon
+          name="lucide:arrow-up-right"
+          class="duration-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        />
+      </div>
+    )
+  }
+</Element>

@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Element from './Element.astro';
+
+interface Props extends HTMLAttributes<'div'> {}
+
+const {
+  class: classList = '',
+  ...rest
+} = Astro.props as Props;
+---
+
+<Element
+  class:list="bg-flexoki-light-ui-3 dark:bg-flexoki-dark-ui-3 animate-pulse"
+  {classList}
+  {...rest}
+/>
