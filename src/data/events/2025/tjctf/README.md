@@ -1,10 +1,10 @@
 ---
 title: "TJCTF 2025"
-start: 2025-05-06T09:00:00+07:00
-end: 2025-05-07T17:00:00+07:00
+start: 2025-06-06T09:00:00+07:00
+end: 2025-06-07T17:00:00+07:00
 location: Online
 description: i won write up contest btw :)
 format: Jeopardy
-url: https://www.breachers.in/
+url: https://tjctf.org/
 ---
-Team: TCP1P
+Team: As kNowN aS b4r
