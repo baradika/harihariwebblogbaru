@@ -11,7 +11,7 @@ import { codeSnippetTransformer } from './src/transformers/code-snippet';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.baracarlo.vercel.app',
+  site: 'https://www.baradika.vercel.app',
   redirects: {
     '/flag': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     '/flags': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
