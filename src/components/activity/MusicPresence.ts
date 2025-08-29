@@ -2,7 +2,6 @@ const CACHE_KEY = 'lastfm-last-played';
 const CACHE_DURATION = 8 * 60 * 1000;
 const MAX_RETRIES = 3;
 
-// pake endpoint resmi Last.fm
 const USERNAME = 'baradika';
 const API_KEY = '27ff964552f4b4eeba3cee11bd08b86f';
 const API_URL = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${USERNAME}&api_key=${API_KEY}&format=json&limit=1`;
