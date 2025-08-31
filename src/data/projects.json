@@ -7,5 +7,15 @@
         "tags": [
             "Portfolio"
         ]
+    },
+    {
+        "id": 2,
+        "title": "XSS Toolkit",
+        "description": "XSS (Cross-site Scripting) Toolkit",
+        "url": "https://barxsstoolkit.netlify.app/",
+        "tags": [
+            "Toolkit",
+            "XSS"
+        ]
     }
 ]
