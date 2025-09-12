@@ -2,8 +2,6 @@
 import { Image } from 'astro:assets';
 import Card from './core/Card.astro';
 import { getBackgroundColorByKey } from '../utils/color';
-
-// Import achievement icons
 import lksIcon from '../assets/achievements/LKS.png';
 import tjIcon from '../assets/achievements/TJ.png';
 import techtonicIcon from '../assets/achievements/techtonic.png';
@@ -23,7 +21,6 @@ const iconMap: Record<string, any> = {
   '../../assets/achievements/breach.png': breachIcon,
 };
 
-// Sort achievements by ID in descending order (latest first)
 achievements = achievements.sort((a, b) => b.id - a.id);
 
 if (limit > 0) {
