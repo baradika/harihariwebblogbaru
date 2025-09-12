@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import Card from './core/Card.astro';
+import { getBackgroundColorByKey } from '../utils/color';
+
+// Import achievement icons
+import lksIcon from '../assets/achievements/LKS.png';
+import tjIcon from '../assets/achievements/TJ.png';
+import techtonicIcon from '../assets/achievements/techtonic.png';
+import breachIcon from '../assets/achievements/breach.png';
+
+const { limit = 0 } = Astro.props as {
+  limit?: number;
+};
+
+const achievementsModule = await import('../data/achievements.json');
+let achievements = achievementsModule.default;
+
+const iconMap: Record<string, any> = {
+  '../../assets/achievements/LKS.png': lksIcon,
+  '../../assets/achievements/TJ.png': tjIcon,
+  '../../assets/achievements/techtonic.png': techtonicIcon,
+  '../../assets/achievements/breach.png': breachIcon,
+};
+
+// Sort achievements by ID in descending order (latest first)
+achievements = achievements.sort((a, b) => b.id - a.id);
+
+if (limit > 0) {
+  achievements = achievements.slice(0, limit);
+}
+---
+
+{
+  achievements && (
+    <div class="flex flex-col gap-2">
+      {achievements.map((achievement) => (
+        <Card>
+          <div slot="content" class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-1">
+              <Image
+                src={iconMap[achievement.icon] || lksIcon}
+                alt={achievement.title}
+                width={80}
+                height={80}
+                quality="max"
+                format="png"
+                loading="eager"
+                class="inline-block flex-shrink-0"
+              />
+              <div class="flex-1">
+                <p class="font-medium">{achievement.title}</p>
+                <p class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+                  {achievement.description}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getBackgroundColorByKey(achievement.category)}`}>
+                {achievement.category}
+              </span>
+              <span class="text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+                {achievement.date}
+              </span>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  )
+}

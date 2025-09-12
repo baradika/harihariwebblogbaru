@@ -1,0 +1,19 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Prose from '../components/core/Prose.astro';
+import Achievements from '../components/Achievements.astro';
+---
+
+<MainLayout title="Achievements">
+  <Prose>
+    <h1 class="font-medium">Achievements</h1>
+    <p>
+      Here are some of my notable achievements in cybersecurity, CTF competitions, 
+      and technical accomplishments that showcase my skills and dedication in the field.
+    </p>
+    
+    <div class="not-prose mt-8">
+      <Achievements />
+    </div>
+  </Prose>
+</MainLayout>

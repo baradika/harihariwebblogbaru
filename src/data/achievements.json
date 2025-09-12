@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "title": "Write-up Contest Winner BreachCTF",
+        "description": "A Write-up competition held by Indian Institute of Technology Bombay",
+        "date": "2025",
+        "category": "International",
+        "icon": "../../assets/achievements/breach.png"
+    },
+    {
+        "id": 2,
+        "title": "2nd In LKS Cybersecurity Category",
+        "description": "Second Winner LKS Cybersecurity East Jakarta 2 Cities",
+        "date": "2025",
+        "category": "Cities",
+        "icon": "../../assets/achievements/LKS.png"
+    },
+    {
+        "id": 3,
+        "title": "3rd In LKS Cybersecurity Category 2025",
+        "description": "Third Winner LKS Cybersecurity DKI Jakarta Province",
+        "date": "2025",
+        "category": "Province",
+        "icon": "../../assets/achievements/LKS.png"
+    },
+    {
+        "id": 4,
+        "title": "Write-up Contest Winner in TJCTF 2025",
+        "description": "A Write-up competition held by Thomas Jefferson Highschool",
+        "date": "2025",
+        "category": "International",
+        "icon": "../../assets/achievements/TJ.png"
+    },
+    {
+        "id": 5,
+        "title": "1st Winner in Techtonic Expo Vol2 CTF",
+        "description": "First Winner Techtonic Expo Vol2 CTF held by University of Bangka Belitung",
+        "date": "2025",
+        "category": "National",
+        "icon": "../../assets/achievements/techtonic.png"
+    }
+]
