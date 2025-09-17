@@ -18,6 +18,7 @@ export const getBackgroundColorByKey = (key: string) => {
 
 const categoryBackgroundColors: { [key: string]: string } = {
   crypto: backgroundColors[3]!,
+  blockchain: backgroundColors[5]!, // Using cyan color for blockchain
   web: backgroundColors[6]!,
   pwn: backgroundColors[1]!,
   bin: backgroundColors[1]!,

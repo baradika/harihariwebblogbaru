@@ -38,5 +38,13 @@
         "date": "2025",
         "category": "National",
         "icon": "../../assets/achievements/techtonic.png"
+    },
+    {
+        "id": 6,
+        "title": "Write-up Contest Winner UIUCTF",
+        "description": "A Write-up competition held by University of Illinois Urbana-Champaign",
+        "date": "2025",
+        "category": "International",
+        "icon": "../../assets/achievements/uiu.png"
     }
 ]

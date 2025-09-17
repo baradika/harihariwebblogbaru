@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Get all notes
+const allNotes = await getCollection('notes');
+---
+
+<MainLayout title="Notes Test">
+  <div class="pt-4 px-4 mx-auto max-w-screen-md text-sm">
+    <h1>Notes Test</h1>
+    <p>Total notes: {allNotes.length}</p>
+    
+    {allNotes.map((note) => (
+      <div class="border p-4 mb-4">
+        <h2>{note.data.title}</h2>
+        <p>{note.data.description}</p>
+        <p>Category: {note.data.category}</p>
+        <p>Date: {note.data.date.toString()}</p>
+        <p>ID: {note.id}</p>
+      </div>
+    ))}
+  </div>
+</MainLayout>

@@ -1,0 +1,161 @@
+---
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import Prose from '../../../../components/core/Prose.astro';
+import Card from '../../../../components/core/Card.astro';
+
+export async function getStaticPaths() {
+  return [
+    { params: { year: '2024', category: 'security' } },
+    { params: { year: '2024', category: 'programming' } },
+    { params: { year: '2024', category: 'tools' } },
+    { params: { year: '2023', category: 'reverse-engineering' } },
+    { params: { year: '2023', category: 'web-security' } },
+  ];
+}
+
+const { year, category } = Astro.params;
+
+const notesByCategory = {
+  'security': {
+    title: 'Security Notes',
+    description: 'Cybersecurity concepts, tools, and techniques',
+    notes: [
+      {
+        title: 'Linux Privilege Escalation Techniques',
+        description: 'Common methods for escalating privileges on Linux systems',
+        date: '2024-03-15',
+        tags: ['linux', 'privesc', 'security']
+      },
+      {
+        title: 'Web Application Security Checklist',
+        description: 'Comprehensive checklist for web application security testing',
+        date: '2024-02-28',
+        tags: ['web', 'security', 'checklist']
+      },
+      {
+        title: 'Network Reconnaissance with Nmap',
+        description: 'Advanced Nmap techniques for network discovery and scanning',
+        date: '2024-01-20',
+        tags: ['nmap', 'recon', 'networking']
+      }
+    ]
+  },
+  'programming': {
+    title: 'Programming Notes',
+    description: 'Code snippets, algorithms, and development tips',
+    notes: [
+      {
+        title: 'Python Automation Scripts',
+        description: 'Useful Python scripts for automating common tasks',
+        date: '2024-03-10',
+        tags: ['python', 'automation', 'scripting']
+      },
+      {
+        title: 'JavaScript Security Best Practices',
+        description: 'Security considerations when developing JavaScript applications',
+        date: '2024-02-15',
+        tags: ['javascript', 'security', 'best-practices']
+      },
+      {
+        title: 'Git Workflow and Commands',
+        description: 'Essential Git commands and workflow patterns',
+        date: '2024-01-05',
+        tags: ['git', 'version-control', 'workflow']
+      }
+    ]
+  },
+  'tools': {
+    title: 'Tools & Setup',
+    description: 'Configuration guides and tool documentation',
+    notes: [
+      {
+        title: 'Burp Suite Configuration',
+        description: 'Setting up Burp Suite for web application testing',
+        date: '2024-03-01',
+        tags: ['burp-suite', 'web-testing', 'setup']
+      },
+      {
+        title: 'Docker for Security Testing',
+        description: 'Using Docker containers for isolated security testing environments',
+        date: '2024-02-10',
+        tags: ['docker', 'containers', 'testing']
+      }
+    ]
+  },
+  'reverse-engineering': {
+    title: 'Reverse Engineering',
+    description: 'Binary analysis and reverse engineering techniques',
+    notes: [
+      {
+        title: 'Ghidra Analysis Workflow',
+        description: 'Step-by-step guide for analyzing binaries with Ghidra',
+        date: '2023-11-15',
+        tags: ['ghidra', 'binary-analysis', 'reverse-engineering']
+      },
+      {
+        title: 'Dynamic Analysis with GDB',
+        description: 'Using GDB for dynamic binary analysis and debugging',
+        date: '2023-10-20',
+        tags: ['gdb', 'debugging', 'dynamic-analysis']
+      }
+    ]
+  },
+  'web-security': {
+    title: 'Web Security',
+    description: 'Web application security and penetration testing',
+    notes: [
+      {
+        title: 'SQL Injection Techniques',
+        description: 'Advanced SQL injection methods and prevention',
+        date: '2023-12-05',
+        tags: ['sql-injection', 'web-security', 'database']
+      },
+      {
+        title: 'XSS Attack Vectors',
+        description: 'Cross-site scripting attack methods and mitigation',
+        date: '2023-11-10',
+        tags: ['xss', 'web-security', 'javascript']
+      }
+    ]
+  }
+};
+
+const currentCategory = notesByCategory[category as keyof typeof notesByCategory];
+const categoryTitle = currentCategory?.title || category;
+const categoryDescription = currentCategory?.description || '';
+const notes = currentCategory?.notes || [];
+---
+
+<MainLayout title={`${categoryTitle} - ${year} Notes`}>
+  <Prose>
+    <h1 class="font-medium">{categoryTitle}</h1>
+    <p>{categoryDescription}</p>
+    
+    <div class="not-prose mt-8">
+      <div class="flex flex-col gap-4">
+        {notes.map((note) => (
+          <Card href={`/notes/${year}/${category}/${note.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}>
+            <div slot="content" class="flex flex-col gap-2">
+              <div class="flex items-start justify-between">
+                <p class="font-medium flex-1">{note.title}</p>
+                <span class="text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 flex-shrink-0 ml-4">
+                  {note.date}
+                </span>
+              </div>
+              <p class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 text-sm">
+                {note.description}
+              </p>
+              <div class="flex flex-wrap gap-1">
+                {note.tags.map((tag) => (
+                  <span class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2 py-1 rounded">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </Prose>
+</MainLayout>

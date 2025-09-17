@@ -52,9 +52,23 @@ const eventChallenges = defineCollection({
   })
 });
 
+const notes = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/notes" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().default("No description."),
+    category: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
+    tags: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
+    date: z.date(),
+    draft: z.boolean().optional(),
+  })
+});
+
+
 export const collections = {
   projects,
   experiences,
   events,
-  eventChallenges
+  eventChallenges,
+  notes
 };

@@ -1,0 +1,90 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import Prose from '../../../components/core/Prose.astro';
+import Card from '../../../components/core/Card.astro';
+
+export async function getStaticPaths() {
+  return [
+    { params: { year: '2024' } },
+    { params: { year: '2023' } },
+  ];
+}
+
+const { year } = Astro.params;
+
+const notesByYear = {
+  '2024': [
+    {
+      category: 'security',
+      title: 'Security Notes',
+      description: 'Cybersecurity concepts, tools, and techniques',
+      count: 8,
+      color: 'bg-flexoki-light-cy dark:bg-flexoki-dark-cy'
+    },
+    {
+      category: 'programming',
+      title: 'Programming Notes',
+      description: 'Code snippets, algorithms, and development tips',
+      count: 12,
+      color: 'bg-flexoki-light-bl dark:bg-flexoki-dark-bl'
+    },
+    {
+      category: 'tools',
+      title: 'Tools & Setup',
+      description: 'Configuration guides and tool documentation',
+      count: 5,
+      color: 'bg-flexoki-light-gr dark:bg-flexoki-dark-gr'
+    }
+  ],
+  '2023': [
+    {
+      category: 'reverse-engineering',
+      title: 'Reverse Engineering',
+      description: 'Binary analysis and reverse engineering techniques',
+      count: 6,
+      color: 'bg-flexoki-light-re dark:bg-flexoki-dark-re'
+    },
+    {
+      category: 'web-security',
+      title: 'Web Security',
+      description: 'Web application security and penetration testing',
+      count: 9,
+      color: 'bg-flexoki-light-pu dark:bg-flexoki-dark-pu'
+    }
+  ]
+};
+
+const currentNotes = notesByYear[year as keyof typeof notesByYear] || [];
+---
+
+<MainLayout title={`${year} Notes`}>
+  <Prose>
+    <h1 class="font-medium">{year} Notes</h1>
+    <p>
+      Technical notes and learning materials from {year}. Browse by category to find specific topics.
+    </p>
+    
+    <div class="not-prose mt-8">
+      <div class="grid md:grid-cols-2 gap-4">
+        {currentNotes.map((category) => (
+          <Card href={`/notes/${year}/${category.category}`}>
+            <div slot="content" class="flex flex-col gap-2">
+              <p class="font-medium">{category.title}</p>
+              <p class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 text-sm">
+                {category.description}
+              </p>
+              <div class="flex items-center justify-between">
+                <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${category.color} text-flexoki-dark-tx dark:text-flexoki-light-tx`}>
+                  {category.category}
+                </span>
+                <span class="text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+                  {category.count} notes
+                </span>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  </Prose>
+</MainLayout>

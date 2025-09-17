@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import Prose from '../components/core/Prose.astro';
+import Card from '../components/core/Card.astro';
+import { getBackgroundColorByKey } from '../utils/color';
+
+// Get all notes (flat, no categories)
+const allNotes = await getCollection('notes');
+
+// Sort notes by date (newest first)
+const sortedNotes = allNotes.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+---
+
+<MainLayout title="Notes">
+  <Prose>
+    <h1 class="font-medium">Notes</h1>
+    <p>
+      Collection of my technical notes, tutorials, and learning materials covering various topics 
+      in cybersecurity, programming, and technology.
+    </p>
+    
+    <div class="not-prose mt-8">
+      <div>
+        <h2 class="text-lg font-medium mb-4">Recent Notes</h2>
+        <div class="flex flex-col gap-4">
+          {sortedNotes.length === 0 ? (
+            <div class="text-center py-8">
+              <p class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+                No notes found. Create your first note in <code>src/content/notes/</code>
+              </p>
+            </div>
+          ) : (
+            sortedNotes.slice(0, 12).map((note) => {
+              const slug = note.id.replace(/\.(md|mdx)$/i, '');
+              return (
+                <Card 
+                  href={`/notes/${slug}`}
+                  class="note-card"
+                >
+                  <div slot="content" class="flex flex-col gap-2">
+                    <div class="flex items-start justify-between">
+                      <p class="font-medium flex-1">{note.data.title}</p>
+                      <span class="text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 flex-shrink-0 ml-4">
+                        {note.data.date.toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })}
+                      </span>
+                    </div>
+                    <p class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 text-sm">
+                      {note.data.description}
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2">
+                      {note.data.category && (
+                        <span class={`text-xs font-medium px-2.5 py-0.5 rounded ${getBackgroundColorByKey(String(Array.isArray(note.data.category) ? note.data.category[0] : note.data.category))}`}>
+                          {Array.isArray(note.data.category) ? note.data.category[0] : note.data.category}
+                        </span>
+                      )}
+                      {note.data.tags && Array.isArray(note.data.tags) && note.data.tags.map((tag) => (
+                        <span class="bg-flexoki-base-100 dark:bg-flexoki-base-900 text-xs font-medium px-2 py-1 rounded">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  </Prose>
+</MainLayout>
+
+
