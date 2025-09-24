@@ -142,21 +142,21 @@ paths = paths.filter((path) => path.label !== '');
     buttons.forEach((btn) => {
       const code = btn.getAttribute('data-code') || '';
       const label = btn.querySelector('.copy-label');
-      let timeout;
+      let timeout: ReturnType<typeof setTimeout> | undefined;
 
       btn.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(code);
           btn.classList.add('copied');
           if (label) label.textContent = 'Copied!';
-          clearTimeout(timeout);
+          if (timeout) clearTimeout(timeout);
           timeout = setTimeout(() => {
             btn.classList.remove('copied');
             if (label) label.textContent = 'Copy';
           }, 1500);
         } catch (e) {
           if (label) label.textContent = 'Failed';
-          clearTimeout(timeout);
+          if (timeout) clearTimeout(timeout);
           timeout = setTimeout(() => {
             if (label) label.textContent = 'Copy';
           }, 1500);

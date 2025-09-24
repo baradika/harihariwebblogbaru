@@ -67,7 +67,7 @@ const ogImage = image !== '' && Astro.site
 {ogImage && <meta name="twitter:image" content={ogImage} />}
 
 <!-- Schema.org markup for Google -->
-<script type="application/ld+json">
+<script type="application/ld+json" is:inline>
   {
     JSON.stringify({
       "@context": "https://schema.org",
