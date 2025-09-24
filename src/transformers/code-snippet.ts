@@ -80,7 +80,6 @@ export const codeSnippetTransformer = (): ShikiTransformer => {
           h('span', { class: 'title ml-2 text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2' }, (headerContainer as any).__fileName)
         );
       }
-      const leftGroup = h('div', { class: 'flex items-center gap-2' }, leftGroupChildren);
 
       // Append a minimal copy button container after the code block
       const copyBtn = h(
