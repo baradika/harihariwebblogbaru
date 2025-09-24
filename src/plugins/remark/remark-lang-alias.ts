@@ -13,15 +13,17 @@ export default function remarkLangAlias() {
       if (!node.lang) return;
       const raw = String(node.lang).toLowerCase();
       const alias = ALIASES[raw];
-      if (!alias) return;
 
-      // Set the highlighting language
-      node.lang = alias.highlight;
+      // Always normalize language casing for Shiki
+      node.lang = raw;
 
-      // Preserve original display language in meta so Shiki transformer can show it
-      const display = alias.display || raw;
-      const meta = node.meta ? String(node.meta) + ' ' : '';
-      node.meta = `${meta}displayLang="${display}"`.trim();
+      if (alias) {
+        // Apply alias highlight while preserving display language in meta
+        node.lang = alias.highlight;
+        const display = alias.display || raw;
+        const meta = node.meta ? String(node.meta) + ' ' : '';
+        node.meta = `${meta}displayLang="${display}"`.trim();
+      }
     });
   };
 }

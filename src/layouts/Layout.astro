@@ -135,7 +135,12 @@ paths = paths.filter((path) => path.label !== '');
 </html>
 
 <script>
-  const onIdle = (cb) => (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+  const onIdle = (cb: () => void) => (
+    (('requestIdleCallback' in window)
+      ? (window as any).requestIdleCallback
+      : (fn: () => void) => setTimeout(fn, 1)
+    )(cb)
+  );
 
   onIdle(() => {
     const buttons = document.querySelectorAll('.copy-button');
