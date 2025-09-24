@@ -24,10 +24,20 @@ const { items }: Props = Astro.props;
     <div class="flex flex-wrap items-center justify-between gap-4 py-2">
       <Button
         variant="text"
+        size="lg"
         href="/"
         class="font-bold text-flexoki-light-cy dark:text-flexoki-dark-cy"
-        >b4r</Button
       >
+        <img
+          src="/avatar.jpg"
+          alt="b4r avatar"
+          width="32"
+          height="32"
+          class="w-8 h-8 rounded-full border border-flexoki-base-100 dark:border-flexoki-base-900"
+          onerror="this.onerror=null;this.src='/favicon.svg'"
+        />
+        b4r
+      </Button>
 
       <nav class="flex gap-x-2 md:gap-x-4">
         <Dropdown side="right" class="block md:hidden">

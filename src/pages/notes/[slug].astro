@@ -7,7 +7,8 @@ import { getBackgroundColorByKey } from '../../utils/color';
 export async function getStaticPaths() {
   const notes = await getCollection('notes');
   return notes.map((note) => {
-    const slug = note.id.replace('.md', '');
+    // Prefer the normalized slug provided by Astro; fallback to stripping common extensions from id
+    const slug = (note as any).slug ?? note.id.replace(/\.(md|mdx)$/i, '');
     return {
       params: { slug },
       props: { note },
@@ -47,6 +48,9 @@ const pageDescription = note.data.description;
         })}
       </span>
     </div>
-    <Content />
+    <h1 class="font-medium text-2xl md:text-3xl mb-4 text-left md:text-justify break-words">{note.data.title}</h1>
+    <div class="text-left md:text-justify leading-relaxed">
+      <Content />
+    </div>
   </Prose>
 </MainLayout>

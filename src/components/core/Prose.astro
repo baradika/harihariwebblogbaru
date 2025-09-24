@@ -51,3 +51,88 @@ const { class: classList = '', ...rest } = Astro.props as Props;
 >
   <slot />
 </Element>
+
+<script is:inline>
+  (function () {
+    const SELECTOR = '.github-repo-card';
+
+    function getCacheKey(owner, repo) {
+      return `ghrepo:${owner}/${repo}`;
+    }
+
+    async function fetchRepo(owner, repo) {
+      const cacheKey = getCacheKey(owner, repo);
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          // 6 hours cache
+          if (Date.now() - parsed.t < 6 * 60 * 60 * 1000) return parsed.d;
+        } catch {}
+      }
+
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+      if (!res.ok) throw new Error('GitHub API error');
+      const data = await res.json();
+      try { localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), d: data })); } catch {}
+      return data;
+    }
+
+    function formatNumber(n) {
+      if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'k';
+      return String(n);
+    }
+
+    function renderCard(el, data) {
+      const href = el.getAttribute('data-href') || data.html_url;
+      const name = data.full_name || `${data.owner?.login}/${data.name}`;
+      const desc = data.description || 'No description provided.';
+      const lang = data.language || '';
+      const stars = data.stargazers_count ?? 0;
+      const forks = data.forks_count ?? 0;
+
+      el.innerHTML = `
+        <a href="${href}" target="_blank" rel="noopener noreferrer"
+           class="rounded text-flexoki-light-tx dark:text-flexoki-dark-tx bg-flexoki-base-50 dark:bg-flexoki-base-950 border border-flexoki-base-100 dark:border-flexoki-base-900 p-4 flex flex-col gap-2 group">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="font-medium truncate">${name}</div>
+              <div class="text-sm text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 line-clamp-2">${desc}</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="duration-75 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><line x1="7" x2="17" y1="7" y2="17"></line><polyline points="17 7 17 17 7 17"></polyline></svg>
+          </div>
+          <div class="flex items-center gap-4 text-xs text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2">
+            <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5l3.09 6.26L22 7.77l-5 4.88L18.18 22 12 18.57 5.82 22 7 12.65l-5-4.88 6.91-1.01L12 .5z"/></svg>${formatNumber(stars)}</span>
+            <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3a2 2 0 00-2 2v10.586A2 2 0 003.586 17L7 20.414V19a2 2 0 012-2h8a2 2 0 002-2V5a2 2 0 00-2-2H5z"/></svg>${formatNumber(forks)}</span>
+            ${lang ? `<span class="ml-auto">${lang}</span>` : ''}
+          </div>
+        </a>
+      `;
+    }
+
+    async function enhance(el) {
+      const owner = el.getAttribute('data-owner');
+      const repo = el.getAttribute('data-repo');
+      if (!owner || !repo) return;
+      try {
+        const data = await fetchRepo(owner, repo);
+        renderCard(el, data);
+      } catch (e) {
+        // fallback: simple link
+        const href = el.getAttribute('data-href') || `https://github.com/${owner}/${repo}`;
+        el.innerHTML = `<a class="text-flexoki-light-cy dark:text-flexoki-dark-cy underline" target="_blank" rel="noopener" href="${href}">${owner}/${repo}</a>`;
+      }
+    }
+
+    function init(root) {
+      const nodes = (root || document).querySelectorAll(SELECTOR);
+      nodes.forEach((n) => enhance(n));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => init(document));
+    } else {
+      init(document);
+    }
+  })();
+</script>

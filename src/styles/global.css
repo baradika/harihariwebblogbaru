@@ -332,64 +332,69 @@ body ::-webkit-scrollbar-thumb {
     }
   }
 
-  .button-container {
-    @apply cursor-pointer;
-  }
-
-  pre:has(+ .button-container) + .button-container {
-    @apply absolute flex justify-end top-3 right-3;
-  }
-
-  pre:has(+ .button-container) + .button-container .copy-button:not(.keep-svg) {
-    @apply md:opacity-0;
-  }
-
-  pre:has(+ .button-container):hover + .button-container .copy-button:not(.keep-svg) {
-    @apply md:opacity-100;
-  }
-
-  .button-container .copy-button {
-    @apply p-2 rounded bg-flexoki-light-ui dark:bg-flexoki-dark-ui border border-flexoki-light-ui-2 dark:border-flexoki-dark-ui-2 transition duration-100 ease-in-out;
-
-    &:hover:not(.copied) {
-      @apply bg-flexoki-light-ui-2 dark:bg-flexoki-dark-ui-2 border border-flexoki-light-ui-3 dark:border-flexoki-dark-ui-3;
-    }
-
-    .lucide-copy {
-      display: block;
-    }
-
-    .lucide-check {
-      display: none;
-    }
-
-    .keep-svg {
-      opacity: 1 !important;
-    }
-
-    &.copied {
-      .lucide-copy {
-        display: none;
-      }
-
-      .lucide-check {
-        display: block;
-      }
-    }
-  }
-
-  .button-container svg {
-    width: 16px;
-    height: 16px;
-    pointer-events: none;
-  }
-
   .language {
     @apply top-3 right-3;
     display: flex;
     justify-content: flex-end;
     position: absolute;
   }
+}
+
+/* Minimal copy button styling */
+.code-wrapper .code-copy {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.code-wrapper .code-copy .copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.375rem;
+  background: var(--color-flexoki-light-ui);
+  color: var(--color-flexoki-light-tx);
+  border: 1px solid var(--color-flexoki-light-ui-2);
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease, opacity 120ms ease;
+}
+
+@variant dark {
+  .code-wrapper .code-copy .copy-button {
+    background: var(--color-flexoki-dark-ui);
+    color: var(--color-flexoki-dark-tx);
+    border-color: var(--color-flexoki-dark-ui-2);
+  }
+}
+
+.code-wrapper .code-copy .copy-button:hover {
+  transform: translateY(-1px);
+  background: var(--color-flexoki-light-ui-2);
+  border-color: var(--color-flexoki-light-ui-3);
+}
+
+@variant dark {
+  .code-wrapper .code-copy .copy-button:hover {
+    background: var(--color-flexoki-dark-ui-2);
+    border-color: var(--color-flexoki-dark-ui-3);
+  }
+}
+
+.code-wrapper .code-copy .copy-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.code-wrapper .code-copy .copy-button.copied {
+  background: var(--color-flexoki-cyan-400);
+  color: var(--color-flexoki-black);
+  border-color: transparent;
+  transform: translateY(-1px) scale(1.02);
 }
 
 h2:hover .autolink,

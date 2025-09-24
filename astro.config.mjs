@@ -7,16 +7,14 @@ import sitemap from '@astrojs/sitemap';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeUniqueHeadingIds from './src/plugins/rehype/rehype-unique-heading-ids';
 import rehypeShiftHeading from './src/plugins/rehype/rehype-shift-heading';
+import rehypeGitHubRepoCard from './src/plugins/rehype/rehype-github-repo-card';
+import remarkLangAlias from './src/plugins/remark/remark-lang-alias';
+
 import { codeSnippetTransformer } from './src/transformers/code-snippet';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.baradika.site',
-  redirects: {
-    '/flag': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    '/flags': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-  },
-  output: 'static',
   integrations: [
     icon(),
     sitemap({
@@ -25,7 +23,13 @@ export default defineConfig({
     })
   ],
   markdown: {
+    remarkPlugins: [
+      // Map languages like GDScript -> Python for highlighting, keep display label
+      remarkLangAlias,
+    ],
     rehypePlugins: [
+      // Transform plain GitHub repo links into placeholder nodes to be enhanced client-side
+      rehypeGitHubRepoCard,
       rehypeUniqueHeadingIds,
       [rehypeShiftHeading, { shift: 1 }],
       [

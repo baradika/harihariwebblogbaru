@@ -135,41 +135,32 @@ paths = paths.filter((path) => path.label !== '');
 </html>
 
 <script>
-  const onIdle = (cb: IdleRequestCallback) =>
-    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+  const onIdle = (cb) => (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
 
   onIdle(() => {
-    const copyButtons = document.querySelectorAll(
-      '.copy-button'
-    ) as NodeListOf<HTMLButtonElement>;
-    copyButtons.forEach((button) => {
-      if (!button.dataset.code) {
-        console.warn('Copy button without data-code attribute found:', button);
-        return;
-      }
+    const buttons = document.querySelectorAll('.copy-button');
+    buttons.forEach((btn) => {
+      const code = btn.getAttribute('data-code') || '';
+      const label = btn.querySelector('.copy-label');
+      let timeout;
 
-      const timeouts: NodeJS.Timeout[] = [];
-      button.addEventListener('click', () => {
-        if (timeouts.length > 0) {
-          timeouts.forEach((timeout) => clearTimeout(timeout));
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.classList.add('copied');
+          if (label) label.textContent = 'Copied!';
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            btn.classList.remove('copied');
+            if (label) label.textContent = 'Copy';
+          }, 1500);
+        } catch (e) {
+          if (label) label.textContent = 'Failed';
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            if (label) label.textContent = 'Copy';
+          }, 1500);
         }
-
-        navigator.clipboard.writeText(button.dataset.code || '');
-
-        button.classList.add('keep-svg');
-        button.classList.add('copied');
-
-        timeouts.push(
-          setTimeout(() => {
-            button.classList.remove('copied');
-          }, 2000)
-        );
-
-        timeouts.push(
-          setTimeout(() => {
-            button.classList.remove('keep-svg');
-          }, 1500)
-        );
       });
     });
   });
