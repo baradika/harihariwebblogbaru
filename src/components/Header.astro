@@ -20,20 +20,20 @@ const { items }: Props = Astro.props;
   class="sticky top-0 z-20 bg-flexoki-light-bg/[0.75] dark:bg-flexoki-dark-bg/[0.75] backdrop-blur-sm border-dashed border-b-1 border-flexoki-base-100 dark:border-flexoki-base-900"
   id="header"
 >
-  <div class="mx-auto px-4 max-w-screen-md text-sm font-medium">
-    <div class="flex flex-wrap items-center justify-between gap-4 py-2">
+  <div class="mx-auto px-4 max-w-screen-md text-xs font-medium">
+    <div class="flex flex-wrap items-center justify-between gap-2 py-1">
       <Button
         variant="text"
-        size="lg"
+        size="md"
         href="/"
-        class="font-bold text-flexoki-light-cy dark:text-flexoki-dark-cy"
+        class="font-bold text-flexoki-light-cy dark:text-flexoki-dark-cy text-sm md:text-base"
       >
         <img
           src="/avatar.jpg"
           alt="b4r avatar"
-          width="32"
-          height="32"
-          class="w-8 h-8 rounded-full border border-flexoki-base-100 dark:border-flexoki-base-900"
+          width="28"
+          height="28"
+          class="w-7 h-7 rounded-full border border-flexoki-base-100 dark:border-flexoki-base-900"
           onerror="this.onerror=null;this.src='/favicon.svg'"
         />
         b4r
@@ -62,14 +62,14 @@ const { items }: Props = Astro.props;
           </div>
         </Dropdown>
 
-        <div class="hidden md:flex items-center gap-2 group">
+        <div class="hidden md:flex items-center gap-2 group text-[0.75rem]">
           {
             items.map((item: Item) => {
               return (
                 <a
                   href={item.url}
                   class:list={[
-                    'px-3 py-2 rounded',
+                    'px-1.5 py-0.5 rounded',
                     'text-flexoki-base-800 dark:text-flexoki-base-400 hover:bg-flexoki-light-ui dark:hover:bg-flexoki-dark-ui',
                     {
                       'text-flexoki-light-tx dark:text-flexoki-dark-tx bg-flexoki-light-ui dark:bg-flexoki-dark-ui group-hover:bg-transparent':

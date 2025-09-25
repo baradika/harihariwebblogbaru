@@ -8,24 +8,27 @@ import Skeleton from '../core/Skeleton.astro';
   <Icon name="lucide:audio-lines" class="h-6 w-6" />
 </div>
 
-<Card id="music-presence" class="w-full rounded-none rounded-t md:rounded-none md:rounded-l">
+<Card
+  id="music-presence"
+  class="w-full rounded-none rounded-t md:rounded-none md:rounded-l !bg-transparent !border-0"
+>
   <div
     class="relative flex flex-col justify-between gap-4"
     id="music-skeleton"
     slot="content"
   >
-    <Skeleton class="w-16 h-16 rounded" />
+    <Skeleton class="w-16 h-16 rounded bg-transparent animate-none" />
     <div class="flex flex-col justify-end overflow-hidden">
       <div class="flex flex-col gap-1">
-        <Skeleton class="w-[calc(1/4.5*100%)] h-6 rounded" />
+        <Skeleton class="w-[calc(1/4.5*100%)] h-6 rounded bg-transparent animate-none" />
         <div class="flex flex-row gap-1">
-          <Skeleton class="w-[calc(1/5*100%)] h-5 rounded" />
-          <Skeleton class="w-[calc(1/4.5*100%)] h-5 rounded" />
-          <Skeleton class="w-[calc(1/6*100%)] h-5 rounded" />
+          <Skeleton class="w-[calc(1/5*100%)] h-5 rounded bg-transparent animate-none" />
+          <Skeleton class="w-[calc(1/4.5*100%)] h-5 rounded bg-transparent animate-none" />
+          <Skeleton class="w-[calc(1/6*100%)] h-5 rounded bg-transparent animate-none" />
         </div>
       </div>
     </div>
-    <div class="text-primary absolute top-0 right-0">
+    <div class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 absolute top-0 right-0">
       <Icon name="lucide:audio-lines" class="h-6 w-6" />
     </div>
   </div>
@@ -69,7 +72,7 @@ import Skeleton from '../core/Skeleton.astro';
         </div>
       </div>
     </div>
-    <div class="text-primary absolute top-0 right-0">
+    <div class="text-flexoki-light-tx-2 dark:text-flexoki-dark-tx-2 absolute top-0 right-0">
       <Icon name="lucide:audio-lines" class="h-6 w-6" />
     </div>
   </div>
