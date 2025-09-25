@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import MainLayout from '../layouts/MainLayout.astro';
 import Prose from '../components/core/Prose.astro';
-import Projects from '../components/Projects.astro';
 import MusicPresence from '../components/activity/MusicPresence.astro';
 import Card from '../components/core/Card.astro';
 // import Experience from "../components/Experience.astro";
@@ -30,23 +29,13 @@ const fallbackNoteTitleMap: Record<string, string> = {
   'godot-game-hack': 'Godot Game Reverse Engineering with GDRE',
 };
 const latestNoteOrFallback = latestNote ?? {
-  slug: fallbackNoteSlug,
+  id: fallbackNoteSlug,
   data: {
     title: fallbackNoteTitleMap[fallbackNoteSlug] ?? 'Latest Note',
     date: new Date(),
     description: ''
   }
 };
-
-function fmt(d: Date) {
-  try {
-    return new Date(d).toLocaleDateString('en-US', {
-      year: 'numeric', month: 'short', day: '2-digit'
-    });
-  } catch {
-    return '';
-  }
-}
 
 const fallbackWriteupSlug = '2025/compfest17quals';
 const fallbackWriteupTitleMap: Record<string, string> = {
@@ -151,7 +140,7 @@ const latestWriteup = {
 
       <section>
         <h3 class="font-medium mb-2">Notes</h3>
-        <a class="block p-3 rounded border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-50/50 dark:hover:bg-flexoki-base-950/50 transition" href={`/notes/${latestNoteOrFallback.slug}`}>
+        <a class="block p-3 rounded border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-50/50 dark:hover:bg-flexoki-base-950/50 transition" href={`/notes/${latestNoteOrFallback.id}`}>
           <div class="font-medium">{latestNoteOrFallback.data.title}</div>
           {latestNoteOrFallback.data.description && <div class="text-sm mt-1">{latestNoteOrFallback.data.description}</div>}
         </a>
