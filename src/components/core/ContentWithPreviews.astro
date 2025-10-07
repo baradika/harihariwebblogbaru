@@ -1,0 +1,25 @@
+---
+import { render } from 'astro:content';
+
+interface Props {
+  content: any;
+}
+
+const { content } = Astro.props;
+
+// Function to process content and add link previews
+async function processContentWithPreviews(content: any) {
+  const { html } = await render(content);
+
+  // Regex to find external URLs in markdown links
+  const urlRegex = /(https?:\/\/(?!localhost|127\.0\.0\.1|.*\.local)([^\s<>"']+))/g;
+
+  // For now, just return the original HTML
+  // We'll implement link preview in a simpler way
+  return html;
+}
+
+const processedContent = await processContentWithPreviews(content);
+---
+
+<div set:html={processedContent}></div>

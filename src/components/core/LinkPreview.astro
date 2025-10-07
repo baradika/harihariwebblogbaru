@@ -1,0 +1,105 @@
+---
+import * as cheerio from 'cheerio';
+
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+
+// Function to fetch link preview data
+async function getLinkPreview(url: string) {
+  try {
+    // Fetch the HTML content of the URL
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; LinkPreview/1.0)',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}`);
+    }
+
+    const html = await response.text();
+
+    // Parse HTML using cheerio
+    const $ = cheerio.load(html);
+
+    // Extract Open Graph and basic meta tags
+    const getMetaProperty = (property: string) => {
+      return $(`meta[property="${property}"]`).attr('content') ||
+             $(`meta[name="${property}"]`).attr('content') || '';
+    };
+
+    const title = getMetaProperty('og:title') || getMetaProperty('twitter:title') ||
+                  $('title').text() || url;
+    const description = getMetaProperty('og:description') || getMetaProperty('twitter:description') ||
+                        $('meta[name="description"]').attr('content') || '';
+    const image = getMetaProperty('og:image') || getMetaProperty('twitter:image') || '';
+    const siteName = getMetaProperty('og:site_name') || '';
+
+    return {
+      title,
+      description,
+      image,
+      siteName,
+      url,
+    };
+  } catch (error) {
+    console.error(`Error fetching preview for ${url}:`, error);
+    // Return fallback data
+    return {
+      title: 'Link Preview',
+      description: 'Unable to load preview for this link.',
+      image: '',
+      siteName: '',
+      url,
+    };
+  }
+}
+
+const previewData = await getLinkPreview(url);
+---
+
+<div class="link-preview border border-gray-200 dark:border-gray-700 rounded-lg p-4 my-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+  <a href={url} target="_blank" rel="noopener noreferrer" class="block">
+    {previewData.image && (
+      <div class="mb-3">
+        <img
+          src={previewData.image}
+          alt={previewData.title}
+          class="w-full h-32 object-cover rounded-md"
+          loading="lazy"
+        />
+      </div>
+    )}
+    <div class="space-y-2">
+      <h3 class="font-semibold text-lg text-gray-900 dark:text-gray-100 leading-tight">
+        {previewData.title}
+      </h3>
+      {previewData.siteName && (
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {previewData.siteName}
+        </p>
+      )}
+      {previewData.description && (
+        <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+          {previewData.description}
+        </p>
+      )}
+      <p class="text-xs text-gray-500 dark:text-gray-500 truncate">
+        {url}
+      </p>
+    </div>
+  </a>
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import { render } from 'astro:content';
+
+interface Props {
+  content: any;
+}
+
+const { content } = Astro.props;
+
+// For now, just render the original content
+// We'll add link preview functionality next
+const { html } = await render(content);
+---
+
+<div set:html={html}></div>
