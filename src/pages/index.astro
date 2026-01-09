@@ -4,7 +4,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 import Prose from '../components/core/Prose.astro';
 import MusicPresence from '../components/activity/MusicPresence.astro';
 import Card from '../components/core/Card.astro';
-// import Experience from "../components/Experience.astro";
 import { getCollection } from 'astro:content';
 
 // Only query notes collection to avoid warnings about empty/non-existent writeups collection
@@ -37,9 +36,9 @@ const latestNoteOrFallback = latestNote ?? {
   }
 };
 
-const fallbackWriteupSlug = '2025/wreckitjunior';
+const fallbackWriteupSlug = '2025/astroctf';
 const fallbackWriteupTitleMap: Record<string, string> = {
-  '2025/wreckitjunior': 'Wreck IT Junior',
+  '2025/astroctf': 'Astro 7.0 CTF',
 };
 
 // Fallback writeup (pages-based) to avoid querying an empty collection
@@ -129,35 +128,42 @@ const latestWriteup = {
     </div>
 
     <h2 class="font-medium mt-8">Latest Posts</h2>
-    <div class="not-prose grid gap-8 grid-cols-1">
+    <div class="not-prose grid gap-6 grid-cols-1 md:grid-cols-2">
       <section>
-        <h3 class="font-medium mb-2">Writeups</h3>
-        <a class="block p-3 rounded border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-50/50 dark:hover:bg-flexoki-base-950/50 transition" href={`/writeups/${latestWriteup.slug}`}>
-          <div class="font-medium">{latestWriteup.data.title}</div>
-          {latestWriteup.data.description && <div class="text-sm mt-1">{latestWriteup.data.description}</div>}
+        <h3 class="font-medium mb-3">Writeups</h3>
+        <a 
+          class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200" 
+          href={`/writeups/${latestWriteup.slug}`}
+        >
+          <div class="font-semibold text-lg mb-2">{latestWriteup.data.title}</div>
+          {latestWriteup.data.description && (
+            <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
+              {latestWriteup.data.description}
+            </div>
+          )}
+          <div class="text-xs text-flexoki-base-500">
+            Read more →
+          </div>
         </a>
       </section>
 
       <section>
-        <h3 class="font-medium mb-2">Notes</h3>
-        <a class="block p-3 rounded border border-flexoki-base-100 dark:border-flexoki-base-900 hover:bg-flexoki-base-50/50 dark:hover:bg-flexoki-base-950/50 transition" href={`/notes/${latestNoteOrFallback.id}`}>
-          <div class="font-medium">{latestNoteOrFallback.data.title}</div>
-          {latestNoteOrFallback.data.description && <div class="text-sm mt-1">{latestNoteOrFallback.data.description}</div>}
+        <h3 class="font-medium mb-3">Notes</h3>
+        <a 
+          class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200" 
+          href={`/notes/${latestNoteOrFallback.id}`}
+        >
+          <div class="font-semibold text-lg mb-2">{latestNoteOrFallback.data.title}</div>
+          {latestNoteOrFallback.data.description && (
+            <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
+              {latestNoteOrFallback.data.description}
+            </div>
+          )}
+          <div class="text-xs text-flexoki-base-500">
+            Read more →
+          </div>
         </a>
       </section>
     </div>
-
-    <!-- <p>
-        I also have <a
-          target="_blank"
-          href=`quartz.${Astro.url.host}`
-          class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
-          >🥬 Digital Garden</a
-        > for CTF notes and other notes.
-      </p>
-      <h2 class="font-medium">Experiences</h2>
-      <div class="not-prose">
-        <Experience />
-      </div> -->
   </Prose>
 </MainLayout>

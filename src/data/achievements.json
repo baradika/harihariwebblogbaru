@@ -46,5 +46,13 @@
         "date": "2025",
         "category": "International",
         "icon": "../../assets/achievements/uiu.png"
+    },
+    {
+        "id": 7,
+        "title": "2nd Place Winner ASTRO CTF 7.0",
+        "description": "Second Place Winner ASTRO CTF 7.0 held by STT Terpadu Nurul Fikri",
+        "date": "2025",
+        "category": "Jabodetabek",
+        "icon": "../../assets/achievements/astro.png"
     }
 ]

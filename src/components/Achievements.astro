@@ -7,6 +7,7 @@ import tjIcon from '../assets/achievements/TJ.png';
 import techtonicIcon from '../assets/achievements/techtonic.png';
 import breachIcon from '../assets/achievements/breach.png';
 import uiuIcon from '../assets/achievements/uiu.png';
+import astroIcon from '../assets/achievements/astro.png';
 
 const { limit = 0 } = Astro.props as {
   limit?: number;
@@ -21,6 +22,7 @@ const iconMap: Record<string, any> = {
   '../../assets/achievements/techtonic.png': techtonicIcon,
   '../../assets/achievements/breach.png': breachIcon,
   '../../assets/achievements/uiu.png': uiuIcon,
+  '../../assets/achievements/astro.png': astroIcon,
 };
 
 achievements = achievements.sort((a, b) => b.id - a.id);
