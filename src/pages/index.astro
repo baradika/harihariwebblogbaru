@@ -6,14 +6,12 @@ import MusicPresence from '../components/activity/MusicPresence.astro';
 import Card from '../components/core/Card.astro';
 import { getCollection } from 'astro:content';
 
-// Only query notes collection to avoid warnings about empty/non-existent writeups collection
 const notes = await getCollection('notes', (e) => !e.data.draft);
 
 function byDateDesc(a: any, b: any) {
   const ad = a?.data?.date ? new Date(a.data.date).getTime() : 0;
   const bd = b?.data?.date ? new Date(b.data.date).getTime() : 0;
   if (bd !== ad) return bd - ad;
-  // Fallback to slug lexical (so 2025/... > 2024/...)
   const as = String(a.slug || '');
   const bs = String(b.slug || '');
   return bs.localeCompare(as);
@@ -21,8 +19,6 @@ function byDateDesc(a: any, b: any) {
 
 const latestNotes = notes.sort(byDateDesc).slice(0, 1);
 const latestNote = latestNotes[0];
-
-// Safe fallback for Notes to avoid /notes/undefined
 const fallbackNoteSlug = 'godot-game-hack';
 const fallbackNoteTitleMap: Record<string, string> = {
   'godot-game-hack': 'Godot Game Reverse Engineering with GDRE',
@@ -32,23 +28,22 @@ const latestNoteOrFallback = latestNote ?? {
   data: {
     title: fallbackNoteTitleMap[fallbackNoteSlug] ?? 'Latest Note',
     date: new Date(),
-    description: ''
-  }
+    description: '',
+  },
 };
 
-const fallbackWriteupSlug = '2025/astroctf';
+const fallbackWriteupSlug = '2025/cyberwave10';
 const fallbackWriteupTitleMap: Record<string, string> = {
-  '2025/astroctf': 'Astro 7.0 CTF',
+  '2025/cyberwave10': 'Cyber Wave 1.0',
 };
 
-// Fallback writeup (pages-based) to avoid querying an empty collection
 const latestWriteup = {
   slug: fallbackWriteupSlug,
   data: {
     title: fallbackWriteupTitleMap[fallbackWriteupSlug] ?? 'Latest Writeup',
     date: new Date(),
-    description: ''
-  }
+    description: '',
+  },
 };
 ---
 
@@ -81,8 +76,8 @@ const latestWriteup = {
           loading="eager"
           class="inline-block mr-1"
         />CTF</a
-      > player. I actively participate in a Capture The Flag (CTF) competitions,
-      where I sharpen my skills in cybersecurity, <a
+      > player. I actively participate in a Capture The Flag (CTF) competitions, where
+      I sharpen my skills in cybersecurity, <a
         href="#"
         class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
         ><Image
@@ -93,7 +88,8 @@ const latestWriteup = {
           loading="eager"
           class="inline-block mr-1"
         />Reverse Engineering</a
-      > <a
+      >
+      <a
         href="#"
         class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
         ><Image
@@ -104,7 +100,7 @@ const latestWriteup = {
           loading="eager"
           class="inline-block mr-1"
         />DFIR</a
-      >and  <a
+      >and <a
         href="#"
         class="not-prose bg-flexoki-base-50 dark:bg-flexoki-base-950 text-xs font-medium px-2.5 py-0.5 rounded"
         ><Image
@@ -115,55 +111,62 @@ const latestWriteup = {
           loading="eager"
           class="inline-block mr-1 dark:invert"
         />Blockchain</a
+      >
+
+      <div class="not-prose flex flex-col md:flex-row gap-1 mt-4">
+        <MusicPresence />
+        <Card
+          class="rounded-none rounded-b md:rounded-none md:rounded-r !bg-transparent !border-0"
+        >
+          <div slot="content" class="text-xs md:w-42">
+            TODO: Add Experiences, Awards, Gym Time, Discord, Github, and more
+            here (because someone said my website too simple).
+          </div>
+        </Card>
+      </div>
+
+      <h2 class="font-medium mt-8">Latest Posts</h2>
+      <div class="not-prose grid gap-6 grid-cols-1 md:grid-cols-2">
+        <section>
+          <h3 class="font-medium mb-3">Writeups</h3>
+          <a
+            class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200"
+            href={`/writeups/${latestWriteup.slug}`}
+          >
+            <div class="font-semibold text-lg mb-2">
+              {latestWriteup.data.title}
+            </div>
+            {
+              latestWriteup.data.description && (
+                <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
+                  {latestWriteup.data.description}
+                </div>
+              )
+            }
+            <div class="text-xs text-flexoki-base-500">Read more →</div>
+          </a>
+        </section>
+
+        <section>
+          <h3 class="font-medium mb-3">Notes</h3>
+          <a
+            class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200"
+            href={`/notes/${latestNoteOrFallback.id}`}
+          >
+            <div class="font-semibold text-lg mb-2">
+              {latestNoteOrFallback.data.title}
+            </div>
+            {
+              latestNoteOrFallback.data.description && (
+                <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
+                  {latestNoteOrFallback.data.description}
+                </div>
+              )
+            }
+            <div class="text-xs text-flexoki-base-500">Read more →</div>
+          </a>
+        </section>
+      </div>
     </p>
-
-    <div class="not-prose flex flex-col md:flex-row gap-1 mt-4">
-      <MusicPresence />
-      <Card class="rounded-none rounded-b md:rounded-none md:rounded-r !bg-transparent !border-0">
-        <div slot="content" class="text-xs md:w-42">
-          TODO: Add Experiences, Awards, Gym Time, Discord, Github, and more
-          here (because someone said my website too simple).
-        </div>
-      </Card>
-    </div>
-
-    <h2 class="font-medium mt-8">Latest Posts</h2>
-    <div class="not-prose grid gap-6 grid-cols-1 md:grid-cols-2">
-      <section>
-        <h3 class="font-medium mb-3">Writeups</h3>
-        <a 
-          class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200" 
-          href={`/writeups/${latestWriteup.slug}`}
-        >
-          <div class="font-semibold text-lg mb-2">{latestWriteup.data.title}</div>
-          {latestWriteup.data.description && (
-            <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
-              {latestWriteup.data.description}
-            </div>
-          )}
-          <div class="text-xs text-flexoki-base-500">
-            Read more →
-          </div>
-        </a>
-      </section>
-
-      <section>
-        <h3 class="font-medium mb-3">Notes</h3>
-        <a 
-          class="block p-4 rounded-lg border-2 border-flexoki-base-200 dark:border-flexoki-base-800 hover:border-flexoki-base-400 dark:hover:border-flexoki-base-600 hover:shadow-md transition-all duration-200" 
-          href={`/notes/${latestNoteOrFallback.id}`}
-        >
-          <div class="font-semibold text-lg mb-2">{latestNoteOrFallback.data.title}</div>
-          {latestNoteOrFallback.data.description && (
-            <div class="text-sm text-flexoki-base-600 dark:text-flexoki-base-400 mb-3">
-              {latestNoteOrFallback.data.description}
-            </div>
-          )}
-          <div class="text-xs text-flexoki-base-500">
-            Read more →
-          </div>
-        </a>
-      </section>
-    </div>
-  </Prose>
-</MainLayout>
+  </Prose></MainLayout
+>
